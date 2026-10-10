@@ -547,7 +547,7 @@ input[type=range] {
     <div class="canvas-card">
       <div class="canvas-header">
         <span class="canvas-title">Interactive Circuit Board View (Drag modules to move &bull; Click to select &bull; Scroll to zoom)</span>
-        <span class="badge" id="wire-status-badge">19 Dynamic Wires Active</span>
+        <span class="badge" id="wire-status-badge">17 Dynamic Wires Active</span>
       </div>
       <div class="canvas-viewport" id="canvas-vp">
         <svg id="circuit-svg" viewBox="0 0 1800 1100" xmlns="http://www.w3.org/2000/svg">
@@ -579,7 +579,7 @@ input[type=range] {
               <line x1="45" y1="20" x2="45" y2="660" class="bb-rail-gnd"/>
               <line x1="335" y1="20" x2="335" y2="660" class="bb-rail-pwr"/>
               <line x1="350" y1="20" x2="350" y2="660" class="bb-rail-gnd"/>
-              <text x="190" y="340" fill="#6b7280" font-family="var(--font-mono)" font-size="14" font-weight="bold" text-anchor="middle">MB-102 BREADBOARD 2 (ESP32 CH340)</text>
+              <text x="190" y="340" fill="#6b7280" font-family="var(--font-mono)" font-size="14" font-weight="bold" text-anchor="middle">MB-102 BREADBOARD 2 (ESP32 CH340 TYPE-C)</text>
             </g>
 
             <!-- Breadboard 3 (Right) -->
@@ -600,15 +600,15 @@ input[type=range] {
 
           <!-- ================= DRAGGABLE MODULES LAYER ================= -->
           <g id="modules-layer">
-            <!-- 1. STM32F103 (BLUE PILL - 40 PINS) -->
+            <!-- 1. STM32F103 (BLUE PILL - 40 PINS TYPE-C) -->
             <g id="mod-stm32" class="draggable-module" data-x="180" data-y="380" data-rot="0" data-w="220" data-h="500">
               <rect class="board-bg stm32-bg" width="220" height="500" rx="12"/>
               <rect class="chip-ic" x="60" y="200" width="100" height="100" rx="6"/>
               <circle cx="70" cy="210" r="3" fill="#475569"/>
               <text class="board-label" x="110" y="32" text-anchor="middle">STM32F103C8T6</text>
-              <text class="board-sub" x="110" y="48" text-anchor="middle">Blue Pill (40 Pins)</text>
+              <text class="board-sub" x="110" y="48" text-anchor="middle">Blue Pill (Type-C)</text>
               <rect x="75" y="0" width="70" height="16" fill="#334155" rx="3"/>
-              <text x="110" y="12" fill="#94a3b8" font-size="8" font-family="var(--font-mono)" text-anchor="middle">MICRO-USB</text>
+              <text x="110" y="12" fill="#38bdf8" font-size="8" font-family="var(--font-mono)" font-weight="bold" text-anchor="middle">TYPE-C</text>
 
               <!-- Left Column Pins -->
               <circle id="pin-stm32-pb12" class="pin-socket" cx="16" cy="70" r="5" data-pin="PB12"/><text class="pin-label" x="26" y="73">B12</text>
@@ -620,8 +620,8 @@ input[type=range] {
               <circle id="pin-stm32-pa10" class="pin-socket connected" cx="16" cy="190" r="5.5" data-pin="PA10 (RX1)"/><text class="pin-label" x="26" y="193" fill="#38bdf8">A10 (RX1)</text>
               <circle id="pin-stm32-pa11" class="pin-socket" cx="16" cy="210" r="5" data-pin="PA11"/><text class="pin-label" x="26" y="213">A11</text>
               <circle id="pin-stm32-pa12" class="pin-socket" cx="16" cy="230" r="5" data-pin="PA12"/><text class="pin-label" x="26" y="233">A12</text>
-              <circle id="pin-stm32-pa13" class="pin-socket" cx="16" cy="250" r="5" data-pin="PA13 (SWDIO)"/><text class="pin-label" x="26" y="253">A13</text>
-              <circle id="pin-stm32-pa14" class="pin-socket" cx="16" cy="270" r="5" data-pin="PA14 (SWCLK)"/><text class="pin-label" x="26" y="273">A14</text>
+              <circle id="pin-stm32-pa13" class="pin-socket" cx="16" cy="250" r="5" data-pin="PA13 (SWDIO)"/><text class="pin-label" x="26" y="253">A13 (SWDIO)</text>
+              <circle id="pin-stm32-pa14" class="pin-socket" cx="16" cy="270" r="5" data-pin="PA14 (SWCLK)"/><text class="pin-label" x="26" y="273">A14 (SWCLK)</text>
               <circle id="pin-stm32-pa15" class="pin-socket" cx="16" cy="290" r="5" data-pin="PA15"/><text class="pin-label" x="26" y="293">A15</text>
               <circle id="pin-stm32-pb3" class="pin-socket" cx="16" cy="310" r="5" data-pin="PB3"/><text class="pin-label" x="26" y="313">B3</text>
               <circle id="pin-stm32-pb4" class="pin-socket" cx="16" cy="330" r="5" data-pin="PB4"/><text class="pin-label" x="26" y="333">B4</text>
@@ -633,11 +633,11 @@ input[type=range] {
               <circle id="pin-stm32-5v" class="pin-socket" cx="16" cy="450" r="5" data-pin="5V In"/><text class="pin-label" x="26" y="453">5V</text>
               <circle id="pin-stm32-gnd" class="pin-socket connected" cx="16" cy="470" r="5.5" data-pin="GND"/><text class="pin-label" x="26" y="473">GND</text>
 
-              <!-- Right Column Pins -->
-              <circle id="pin-stm32-pa4" class="pin-socket connected" cx="204" cy="170" r="5.5" data-pin="PA4 (SPI1 CS)"/><text class="pin-label" x="194" y="173" text-anchor="end" fill="#38bdf8">A4 (CS)</text>
-              <circle id="pin-stm32-pa5" class="pin-socket connected" cx="204" cy="190" r="5.5" data-pin="PA5 (SPI1 SCK)"/><text class="pin-label" x="194" y="193" text-anchor="end" fill="#38bdf8">A5 (SCK)</text>
-              <circle id="pin-stm32-pa6" class="pin-socket connected" cx="204" cy="210" r="5.5" data-pin="PA6 (SPI1 MISO)"/><text class="pin-label" x="194" y="213" text-anchor="end" fill="#38bdf8">A6 (MISO)</text>
-              <circle id="pin-stm32-pa7" class="pin-socket connected" cx="204" cy="230" r="5.5" data-pin="PA7 (SPI1 MOSI)"/><text class="pin-label" x="194" y="233" text-anchor="end" fill="#38bdf8">A7 (MOSI)</text>
+              <!-- Right Column Pins (Blue Pill Hardware Order) -->
+              <circle id="pin-stm32-pa7" class="pin-socket connected" cx="204" cy="170" r="5.5" data-pin="PA7 (SPI1 MOSI)"/><text class="pin-label" x="194" y="173" text-anchor="end" fill="#38bdf8">A7 (MOSI)</text>
+              <circle id="pin-stm32-pa6" class="pin-socket connected" cx="204" cy="190" r="5.5" data-pin="PA6 (SPI1 MISO)"/><text class="pin-label" x="194" y="193" text-anchor="end" fill="#38bdf8">A6 (MISO)</text>
+              <circle id="pin-stm32-pa5" class="pin-socket connected" cx="204" cy="210" r="5.5" data-pin="PA5 (SPI1 SCK)"/><text class="pin-label" x="194" y="213" text-anchor="end" fill="#38bdf8">A5 (SCK)</text>
+              <circle id="pin-stm32-pa4" class="pin-socket connected" cx="204" cy="230" r="5.5" data-pin="PA4 (SPI1 CS)"/><text class="pin-label" x="194" y="233" text-anchor="end" fill="#38bdf8">A4 (CS)</text>
               <circle id="pin-stm32-pb0" class="pin-socket" cx="204" cy="250" r="5" data-pin="PB0"/><text class="pin-label" x="194" y="253" text-anchor="end">B0</text>
               <circle id="pin-stm32-pb1" class="pin-socket" cx="204" cy="270" r="5" data-pin="PB1"/><text class="pin-label" x="194" y="273" text-anchor="end">B1</text>
               <circle id="pin-stm32-pb10" class="pin-socket" cx="204" cy="290" r="5" data-pin="PB10"/><text class="pin-label" x="194" y="293" text-anchor="end">B10</text>
@@ -662,72 +662,91 @@ input[type=range] {
               <circle id="pin-mpu-int" class="pin-socket" cx="198" cy="85" r="4.5" data-pin="INT"/><text class="pin-label" x="198" y="105" text-anchor="middle">INT</text>
             </g>
 
-            <!-- 3. W25QXX (W25Q64 SPI FLASH - 8 PINS) -->
-            <g id="mod-flash" class="draggable-module" data-x="660" data-y="130" data-rot="0" data-w="220" data-h="150">
-              <rect class="board-bg flash-bg" width="220" height="150" rx="10"/>
-              <rect class="chip-ic" x="135" y="45" width="55" height="55" rx="4"/>
-              <text class="board-label" x="80" y="26" text-anchor="middle">W25QXX FLASH</text>
-              <text class="board-sub" x="80" y="40" text-anchor="middle">64M-Bit SPI Flash</text>
+            <!-- 3. W25QXX (W25Q64 SPI FLASH - 6-PIN BREAKOUT MODULE) -->
+            <g id="mod-flash" class="draggable-module" data-x="660" data-y="130" data-rot="0" data-w="220" data-h="130">
+              <rect class="board-bg flash-bg" width="220" height="130" rx="10"/>
+              <rect class="chip-ic" x="135" y="38" width="55" height="55" rx="4"/>
+              <text class="board-label" x="80" y="26" text-anchor="middle">W25Q64 BREAKOUT</text>
+              <text class="board-sub" x="80" y="40" text-anchor="middle">6-Pin SPI (Auto Pull-Up)</text>
 
-              <circle id="pin-flash-cs" class="pin-socket connected" cx="20" cy="65" r="5" data-pin="/CS"/><text class="pin-label" x="32" y="68" fill="#38bdf8">/CS</text>
-              <circle id="pin-flash-do" class="pin-socket connected" cx="20" cy="90" r="5" data-pin="DO (MISO)"/><text class="pin-label" x="32" y="93" fill="#38bdf8">DO</text>
-              <circle id="pin-flash-wp" class="pin-socket connected" cx="20" cy="115" r="5" data-pin="/WP"/><text class="pin-label" x="32" y="118">/WP</text>
-              <circle id="pin-flash-gnd" class="pin-socket connected" cx="20" cy="138" r="5" data-pin="GND"/><text class="pin-label" x="32" y="141">GND</text>
-              <circle id="pin-flash-di" class="pin-socket connected" cx="120" cy="138" r="5" data-pin="DI (MOSI)"/><text class="pin-label" x="120" y="125" text-anchor="middle" fill="#38bdf8">DI</text>
-              <circle id="pin-flash-clk" class="pin-socket connected" cx="150" cy="138" r="5" data-pin="CLK"/><text class="pin-label" x="150" y="125" text-anchor="middle" fill="#38bdf8">CLK</text>
-              <circle id="pin-flash-hold" class="pin-socket connected" cx="180" cy="138" r="5" data-pin="/HOLD"/><text class="pin-label" x="180" y="125" text-anchor="middle">/HOLD</text>
-              <circle id="pin-flash-vcc" class="pin-socket connected" cx="205" cy="138" r="5" data-pin="VCC (3.3V)"/><text class="pin-label" x="205" y="125" text-anchor="middle" fill="#fb923c">VCC</text>
+              <!-- Single Straight 6-Pin Header matching [Lập Trình Nhúng A-Z][135] Module -->
+              <circle id="pin-flash-vcc" class="pin-socket connected" cx="20" cy="85" r="5" data-pin="VCC (3.3V)"/><text class="pin-label" x="20" y="105" text-anchor="middle" fill="#fb923c">VCC</text>
+              <circle id="pin-flash-cs" class="pin-socket connected" cx="50" cy="85" r="5" data-pin="/CS (NSS)"/><text class="pin-label" x="50" y="105" text-anchor="middle" fill="#38bdf8">CS</text>
+              <circle id="pin-flash-do" class="pin-socket connected" cx="80" cy="85" r="5" data-pin="DO (MISO)"/><text class="pin-label" x="80" y="105" text-anchor="middle" fill="#38bdf8">DO</text>
+              <circle id="pin-flash-gnd" class="pin-socket connected" cx="110" cy="85" r="5" data-pin="GND"/><text class="pin-label" x="110" y="105" text-anchor="middle">GND</text>
+              <circle id="pin-flash-clk" class="pin-socket connected" cx="140" cy="85" r="5" data-pin="CLK (SCK)"/><text class="pin-label" x="140" y="105" text-anchor="middle" fill="#38bdf8">CLK</text>
+              <circle id="pin-flash-di" class="pin-socket connected" cx="170" cy="85" r="5" data-pin="DI (MOSI)"/><text class="pin-label" x="170" y="105" text-anchor="middle" fill="#38bdf8">DI</text>
             </g>
 
-            <!-- 4. ESP32 CH340 (30 PINS) -->
+            <!-- 4. ESP32 CH340 (30 PINS TYPE-C DEVKIT) -->
             <g id="mod-esp32" class="draggable-module" data-x="660" data-y="380" data-rot="0" data-w="230" data-h="460">
               <rect class="board-bg esp32-bg" width="230" height="460" rx="12"/>
               <rect class="chip-ic" x="50" y="110" width="130" height="160" rx="5"/>
               <rect x="65" y="120" width="100" height="90" fill="#1b2433" rx="3"/>
               <text class="board-label" x="115" y="32" text-anchor="middle">ESP-WROOM-32</text>
-              <text class="board-sub" x="115" y="48" text-anchor="middle">CH340 (30 Pins)</text>
+              <text class="board-sub" x="115" y="48" text-anchor="middle">CH340 30-Pin Type-C</text>
               <rect x="80" y="444" width="70" height="16" fill="#334155" rx="3"/>
-              <text x="115" y="456" fill="#94a3b8" font-size="8" font-family="var(--font-mono)" text-anchor="middle">MICRO-USB</text>
+              <text x="115" y="456" fill="#38bdf8" font-size="8" font-family="var(--font-mono)" font-weight="bold" text-anchor="middle">TYPE-C</text>
 
-              <!-- Left Side Pins -->
-              <circle id="pin-esp-d16" class="pin-socket connected" cx="16" cy="385" r="5.5" data-pin="GPIO 16 (RX2)"/><text class="pin-label" x="26" y="388" fill="#f472b6">D16 (RX2)</text>
-              <circle id="pin-esp-d17" class="pin-socket connected" cx="16" cy="410" r="5.5" data-pin="GPIO 17 (TX2)"/><text class="pin-label" x="26" y="413" fill="#f472b6">D17 (TX2)</text>
-              <circle id="pin-esp-gnd-l" class="pin-socket connected" cx="16" cy="435" r="5.5" data-pin="GND"/><text class="pin-label" x="26" y="438">GND</text>
+              <!-- Left Side Pins (Pin 1 to 15, matching physical DevKit V1) -->
+              <circle id="pin-esp-en" class="pin-socket" cx="16" cy="85" r="4.5" data-pin="EN"/><text class="pin-label" x="26" y="88">EN</text>
+              <circle id="pin-esp-vp" class="pin-socket" cx="16" cy="110" r="4.5" data-pin="VP (GPIO 36)"/><text class="pin-label" x="26" y="113">VP</text>
+              <circle id="pin-esp-vn" class="pin-socket" cx="16" cy="135" r="4.5" data-pin="VN (GPIO 39)"/><text class="pin-label" x="26" y="138">VN</text>
+              <circle id="pin-esp-d34" class="pin-socket" cx="16" cy="160" r="4.5" data-pin="GPIO 34"/><text class="pin-label" x="26" y="163">D34</text>
+              <circle id="pin-esp-d35" class="pin-socket" cx="16" cy="185" r="4.5" data-pin="GPIO 35"/><text class="pin-label" x="26" y="188">D35</text>
+              <circle id="pin-esp-d32" class="pin-socket" cx="16" cy="210" r="4.5" data-pin="GPIO 32"/><text class="pin-label" x="26" y="213">D32</text>
+              <circle id="pin-esp-d33" class="pin-socket" cx="16" cy="235" r="4.5" data-pin="GPIO 33"/><text class="pin-label" x="26" y="238">D33</text>
+              <circle id="pin-esp-d25" class="pin-socket" cx="16" cy="260" r="4.5" data-pin="GPIO 25"/><text class="pin-label" x="26" y="263">D25</text>
+              <circle id="pin-esp-d26" class="pin-socket" cx="16" cy="285" r="4.5" data-pin="GPIO 26"/><text class="pin-label" x="26" y="288">D26</text>
+              <circle id="pin-esp-d27" class="pin-socket" cx="16" cy="310" r="4.5" data-pin="GPIO 27"/><text class="pin-label" x="26" y="313">D27</text>
+              <circle id="pin-esp-d14" class="pin-socket" cx="16" cy="335" r="4.5" data-pin="GPIO 14"/><text class="pin-label" x="26" y="338">D14</text>
+              <circle id="pin-esp-d12" class="pin-socket" cx="16" cy="360" r="4.5" data-pin="GPIO 12"/><text class="pin-label" x="26" y="363">D12</text>
+              <circle id="pin-esp-d13" class="pin-socket" cx="16" cy="385" r="4.5" data-pin="GPIO 13"/><text class="pin-label" x="26" y="388">D13</text>
+              <circle id="pin-esp-gnd-l" class="pin-socket connected" cx="16" cy="410" r="5.5" data-pin="GND"/><text class="pin-label" x="26" y="413">GND</text>
+              <circle id="pin-esp-5v" class="pin-socket connected" cx="16" cy="435" r="5.5" data-pin="VIN (5V In)"/><text class="pin-label" x="26" y="438" fill="#f43f5e">5V / VIN</text>
 
-              <!-- Right Side Pins (VSPI Display) -->
-              <circle id="pin-esp-d23" class="pin-socket connected" cx="214" cy="70" r="5.5" data-pin="GPIO 23 (MOSI)"/><text class="pin-label" x="204" y="73" text-anchor="end" fill="#c084fc">D23 (MOSI)</text>
-              <circle id="pin-esp-d18" class="pin-socket connected" cx="214" cy="220" r="5.5" data-pin="GPIO 18 (SCK)"/><text class="pin-label" x="204" y="223" text-anchor="end" fill="#c084fc">D18 (SCK)</text>
-              <circle id="pin-esp-d4" class="pin-socket connected" cx="214" cy="270" r="5.5" data-pin="GPIO 4 (RST)"/><text class="pin-label" x="204" y="273" text-anchor="end" fill="#c084fc">D4 (RST)</text>
-              <circle id="pin-esp-d2" class="pin-socket connected" cx="214" cy="295" r="5.5" data-pin="GPIO 2 (DC)"/><text class="pin-label" x="204" y="298" text-anchor="end" fill="#c084fc">D2 (DC)</text>
-              <circle id="pin-esp-d15" class="pin-socket connected" cx="214" cy="320" r="5.5" data-pin="GPIO 15 (CS)"/><text class="pin-label" x="204" y="323" text-anchor="end" fill="#c084fc">D15 (CS)</text>
-              <circle id="pin-esp-gnd" class="pin-socket connected" cx="214" cy="345" r="5.5" data-pin="GND"/><text class="pin-label" x="204" y="348" text-anchor="end">GND</text>
-              <circle id="pin-esp-5v" class="pin-socket connected" cx="214" cy="370" r="5.5" data-pin="5V / VIN"/><text class="pin-label" x="204" y="373" text-anchor="end" fill="#f43f5e">5V / VIN</text>
-              <circle id="pin-esp-3v3" class="pin-socket connected" cx="214" cy="395" r="5.5" data-pin="3.3V Out"/><text class="pin-label" x="204" y="398" text-anchor="end" fill="#fb923c">3V3</text>
+              <!-- Right Side Pins (Pins 16 to 30, matching physical DevKit V1) -->
+              <circle id="pin-esp-d23" class="pin-socket connected" cx="214" cy="85" r="5.5" data-pin="GPIO 23 (MOSI)"/><text class="pin-label" x="204" y="88" text-anchor="end" fill="#c084fc">D23 (MOSI)</text>
+              <circle id="pin-esp-d22" class="pin-socket" cx="214" cy="110" r="4.5" data-pin="GPIO 22"/><text class="pin-label" x="204" y="113" text-anchor="end">D22</text>
+              <circle id="pin-esp-tx0" class="pin-socket" cx="214" cy="135" r="4.5" data-pin="TX0 (GPIO 1)"/><text class="pin-label" x="204" y="138" text-anchor="end">TX0</text>
+              <circle id="pin-esp-rx0" class="pin-socket" cx="214" cy="160" r="4.5" data-pin="RX0 (GPIO 3)"/><text class="pin-label" x="204" y="163" text-anchor="end">RX0</text>
+              <circle id="pin-esp-d21" class="pin-socket" cx="214" cy="185" r="4.5" data-pin="GPIO 21"/><text class="pin-label" x="204" y="188" text-anchor="end">D21</text>
+              <circle id="pin-esp-d19" class="pin-socket" cx="214" cy="210" r="4.5" data-pin="GPIO 19 (MISO)"/><text class="pin-label" x="204" y="213" text-anchor="end">D19 (MISO)</text>
+              <circle id="pin-esp-d18" class="pin-socket connected" cx="214" cy="235" r="5.5" data-pin="GPIO 18 (SCK)"/><text class="pin-label" x="204" y="238" text-anchor="end" fill="#c084fc">D18 (SCK)</text>
+              <circle id="pin-esp-d5" class="pin-socket" cx="214" cy="260" r="4.5" data-pin="GPIO 5"/><text class="pin-label" x="204" y="263" text-anchor="end">D5</text>
+              <circle id="pin-esp-d17" class="pin-socket connected" cx="214" cy="285" r="5.5" data-pin="GPIO 17 (TX2)"/><text class="pin-label" x="204" y="288" text-anchor="end" fill="#f472b6">D17 (TX2)</text>
+              <circle id="pin-esp-d16" class="pin-socket connected" cx="214" cy="310" r="5.5" data-pin="GPIO 16 (RX2)"/><text class="pin-label" x="204" y="313" text-anchor="end" fill="#f472b6">D16 (RX2)</text>
+              <circle id="pin-esp-d4" class="pin-socket connected" cx="214" cy="335" r="5.5" data-pin="GPIO 4 (RST)"/><text class="pin-label" x="204" y="338" text-anchor="end" fill="#c084fc">D4 (RST)</text>
+              <circle id="pin-esp-d2" class="pin-socket connected" cx="214" cy="360" r="5.5" data-pin="GPIO 2 (DC)"/><text class="pin-label" x="204" y="363" text-anchor="end" fill="#c084fc">D2 (DC)</text>
+              <circle id="pin-esp-d15" class="pin-socket connected" cx="214" cy="385" r="5.5" data-pin="GPIO 15 (CS)"/><text class="pin-label" x="204" y="388" text-anchor="end" fill="#c084fc">D15 (CS)</text>
+              <circle id="pin-esp-gnd" class="pin-socket connected" cx="214" cy="410" r="5.5" data-pin="GND"/><text class="pin-label" x="204" y="413" text-anchor="end">GND</text>
+              <circle id="pin-esp-3v3" class="pin-socket connected" cx="214" cy="435" r="5.5" data-pin="3.3V Out"/><text class="pin-label" x="204" y="438" text-anchor="end" fill="#fb923c">3V3</text>
             </g>
 
-            <!-- 5. 2.8" SPI TFT LCD (ILI9341 - NON TOUCH) -->
+            <!-- 5. 2.8" SPI TFT LCD (ILI9341 - RED PCB CONTIGUOUS HEADER) -->
             <g id="mod-tft" class="draggable-module" data-x="1140" data-y="380" data-rot="0" data-w="250" data-h="500">
               <rect class="board-bg tft-bg" width="250" height="500" rx="12"/>
-              <rect x="25" y="150" width="200" height="280" fill="#000080" stroke="#475569" rx="5"/>
               <text class="board-label" x="125" y="28" text-anchor="middle">2.8" SPI TFT LCD</text>
-              <text class="board-sub" x="125" y="44" text-anchor="middle">ILI9341 320x240 (No Touch)</text>
+              <text class="board-sub" x="125" y="44" text-anchor="middle">ILI9341 Red PCB (Non-Touch)</text>
+
+              <!-- Single Contiguous Straight 2.54mm Pin Header (Pins 1-8) -->
+              <circle id="pin-tft-vcc" class="pin-socket connected" cx="16" cy="65" r="5" data-pin="Pin 1: VCC"/><text class="pin-label" x="26" y="68" fill="#f43f5e">1. VCC (5V)</text>
+              <circle id="pin-tft-gnd" class="pin-socket connected" cx="16" cy="88" r="5" data-pin="Pin 2: GND"/><text class="pin-label" x="26" y="91">2. GND</text>
+              <circle id="pin-tft-cs" class="pin-socket connected" cx="16" cy="111" r="5" data-pin="Pin 3: CS"/><text class="pin-label" x="26" y="114" fill="#c084fc">3. CS (D15)</text>
+              <circle id="pin-tft-rst" class="pin-socket connected" cx="16" cy="134" r="5" data-pin="Pin 4: RESET"/><text class="pin-label" x="26" y="137" fill="#c084fc">4. RST (D4)</text>
+              <circle id="pin-tft-dc" class="pin-socket connected" cx="16" cy="157" r="5" data-pin="Pin 5: DC"/><text class="pin-label" x="26" y="160" fill="#c084fc">5. DC (D2)</text>
+              <circle id="pin-tft-mosi" class="pin-socket connected" cx="16" cy="180" r="5" data-pin="Pin 6: SDI (MOSI)"/><text class="pin-label" x="26" y="183" fill="#c084fc">6. SDI (D23)</text>
+              <circle id="pin-tft-sck" class="pin-socket connected" cx="16" cy="203" r="5" data-pin="Pin 7: SCK"/><text class="pin-label" x="26" y="206" fill="#c084fc">7. SCK (D18)</text>
+              <circle id="pin-tft-led" class="pin-socket connected" cx="16" cy="226" r="5" data-pin="Pin 8: LED"/><text class="pin-label" x="26" y="229" fill="#fb923c">8. LED (3V3)</text>
 
               <!-- Live Graphics Preview on Screen -->
-              <text x="125" y="185" fill="#ffffff" font-size="11" font-family="var(--font-mono)" text-anchor="middle" font-weight="bold">ESP32 + ILI9341</text>
-              <text x="45" y="220" fill="#4ade80" font-size="10" font-family="var(--font-mono)">STATUS: ACTIVE</text>
-              <text x="45" y="245" fill="#fb923c" font-size="10" font-family="var(--font-mono)">ROLL: +12.4°</text>
-              <text x="45" y="270" fill="#38bdf8" font-size="10" font-family="var(--font-mono)">PITCH: -5.8°</text>
-              <text x="45" y="295" fill="#f472b6" font-size="10" font-family="var(--font-mono)">UART: 115200 8N1</text>
-
-              <!-- Connector Pins -->
-              <circle id="pin-tft-vcc" class="pin-socket connected" cx="16" cy="65" r="5" data-pin="Pin 1: VCC"/><text class="pin-label" x="26" y="68" fill="#f43f5e">1. VCC (5V)</text>
-              <circle id="pin-tft-gnd" class="pin-socket connected" cx="16" cy="85" r="5" data-pin="Pin 2: GND"/><text class="pin-label" x="26" y="88">2. GND</text>
-              <circle id="pin-tft-cs" class="pin-socket connected" cx="16" cy="105" r="5" data-pin="Pin 3: CS"/><text class="pin-label" x="26" y="108" fill="#c084fc">3. CS (D15)</text>
-              <circle id="pin-tft-rst" class="pin-socket connected" cx="16" cy="125" r="5" data-pin="Pin 4: RESET"/><text class="pin-label" x="26" y="128" fill="#c084fc">4. RST (D4)</text>
-              <circle id="pin-tft-dc" class="pin-socket connected" cx="16" cy="145" r="5" data-pin="Pin 5: DC"/><text class="pin-label" x="26" y="148" fill="#c084fc">5. DC (D2)</text>
-              <circle id="pin-tft-mosi" class="pin-socket connected" cx="16" cy="445" r="5" data-pin="Pin 6: SDI"/><text class="pin-label" x="26" y="448" fill="#c084fc">6. SDI (D23)</text>
-              <circle id="pin-tft-sck" class="pin-socket connected" cx="16" cy="465" r="5" data-pin="Pin 7: SCK"/><text class="pin-label" x="26" y="468" fill="#c084fc">7. SCK (D18)</text>
-              <circle id="pin-tft-led" class="pin-socket connected" cx="16" cy="485" r="5" data-pin="Pin 8: LED"/><text class="pin-label" x="26" y="488" fill="#fb923c">8. LED (3V3)</text>
+              <rect x="25" y="255" width="200" height="230" fill="#000080" stroke="#475569" rx="5"/>
+              <text x="125" y="285" fill="#ffffff" font-size="11" font-family="var(--font-mono)" text-anchor="middle" font-weight="bold">ESP32 + ILI9341</text>
+              <text x="45" y="320" fill="#4ade80" font-size="10" font-family="var(--font-mono)">STATUS: ACTIVE</text>
+              <text x="45" y="348" fill="#fb923c" font-size="10" font-family="var(--font-mono)">ROLL: +12.4°</text>
+              <text x="45" y="376" fill="#38bdf8" font-size="10" font-family="var(--font-mono)">PITCH: -5.8°</text>
+              <text x="45" y="404" fill="#f472b6" font-size="10" font-family="var(--font-mono)">UART: 115200 8N1</text>
+              <text x="45" y="432" fill="#94a3b8" font-size="9" font-family="var(--font-mono)">FRAME: 60 FPS (VSPI)</text>
             </g>
 
             <!-- 6. MB-102 POWER SUPPLY MODULE -->
@@ -821,14 +840,12 @@ const WIRE_NETS = [
   { bus: 'pwr', stroke: 'var(--gnd)', src: 'pin-stm32-gnd', dst: 'pin-mpu-gnd', name: 'MPU_GND' },
   { bus: 'pwr', stroke: 'var(--gnd)', src: 'pin-mpu-gnd', dst: 'pin-mpu-ad0', name: 'MPU_AD0_GND' },
 
-  // 2. SPI1 Bus (W25Qxx <-> STM32)
+  // 2. SPI1 Bus (W25Qxx Breakout <-> STM32)
   { bus: 'spi1', stroke: 'var(--spi1)', src: 'pin-stm32-pa4', dst: 'pin-flash-cs', name: 'SPI1_NSS' },
   { bus: 'spi1', stroke: 'var(--spi1)', src: 'pin-stm32-pa5', dst: 'pin-flash-clk', name: 'SPI1_SCK' },
   { bus: 'spi1', stroke: 'var(--spi1)', src: 'pin-stm32-pa6', dst: 'pin-flash-do', name: 'SPI1_MISO' },
   { bus: 'spi1', stroke: 'var(--spi1)', src: 'pin-stm32-pa7', dst: 'pin-flash-di', name: 'SPI1_MOSI' },
   { bus: 'pwr', stroke: 'var(--pwr-3v3)', src: 'pin-stm32-3v3', dst: 'pin-flash-vcc', name: 'FLASH_VCC_3V3' },
-  { bus: 'pwr', stroke: 'var(--pwr-3v3)', src: 'pin-flash-vcc', dst: 'pin-flash-wp', name: 'FLASH_WP_PULLUP' },
-  { bus: 'pwr', stroke: 'var(--pwr-3v3)', src: 'pin-flash-vcc', dst: 'pin-flash-hold', name: 'FLASH_HOLD_PULLUP' },
   { bus: 'pwr', stroke: 'var(--gnd)', src: 'pin-stm32-gnd', dst: 'pin-flash-gnd', name: 'FLASH_GND' },
 
   // 3. UART Link (STM32 <-> ESP32)

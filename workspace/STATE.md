@@ -1,13 +1,25 @@
 # Workspace State
 
-**Project:** BTL-KTVXL-N1 (Thiết bị đo góc nghiêng sử dụng MPU6050, W25Qxx, STM32F103, ESP32, ILI9341 2.8" SPI TFT)  
-**Branch:** `main`  
-**Status:** Hardware wiring architecture, pinout maps, interactive drag/rotate simulator, and hardware rationale fully documented. Ready for firmware driver implementation.
+**Project:** BTL-KTVXL-N1 (Thiết bị đo góc nghiêng sử dụng MPU6050, W25Qxx, STM32F103 Type-C, ESP32 Type-C, ILI9341 2.8" SPI TFT)  
+**Branch:** `feature/hardware-wiring-and-docs`  
+**Status:** Firmware implementation, unit tests, predevelopment package, simulation configurations, and hardware documentation complete and verified. Ready for physical hardware testing and board bring-up.
 
-## Completed Artifacts & Documentation
-- `docs/interactive-wiring.html`: Standalone interactive circuit canvas with draggable modules, 90-degree rotation, pan/zoom, dynamic Bézier wire recalculation, bus filters (I2C, SPI1, VSPI, UART, Power), and layout presets matching the 740k component kit (3x MB-102 Breadboards, MB-102 Power Supply, STM32 Blue Pill, ESP32 CH340, GY-521 MPU6050, W25Q64 Flash, 2.8" SPI TFT).
-- `docs/Wiring_and_Pinouts.md`: Full ASCII pinout diagrams, exact pin-by-pin tables, and UART command protocol definitions.
-- `docs/Hardware_Architecture_and_Wiring_Rationale.md`: Engineering analysis of dual-processor partitioning (STM32 hard real-time 100Hz filter loop vs ESP32 graphics host), bus signal integrity, FMEA failure analysis, and power budgeting.
-- `docs/Research/MPU6050.md`: Sensor register map, DLPF configuration, and Complementary filter formulas.
-- `docs/Research/FlashW250Qxx.md`: Winbond W25Q64 SPI opcodes, sector layout, and calibration storage schema.
-- `docs/Research/STM32.md`: STM32F103 peripheral allocation (I2C1 PB6/PB7, SPI1 PA4..PA7, USART1 PA9/PA10).
+## Completed Artifacts & Codebase
+- **Predevelopment Package:** `docs/Project_Predevelopment_Package.md` (967 lines, complete 16-section standard with C4 diagrams, ADRs, state machines, and bidirectional traceability matrix).
+- **Core Firmware Modules:**
+  - `src/filter.c` & `include/filter.h`: 100 Hz Complementary filter ($\alpha = 0.98, \Delta t = 0.01\text{s}$) with offset calibration.
+  - `src/protocol.c` & `include/protocol.h`: 15-byte binary telemetry frame codec with CRC16-CCITT + ASCII command parser.
+  - `src/storage_format.c` & `include/storage_format.h`: W25Q64 Sector 0 config block serialization with CRC32 integrity check.
+  - `src/mpu6050.c` & `include/mpu6050.h`: I2C1 burst read (14 bytes) & stationary calibration.
+  - `src/w25qxx.c` & `include/w25qxx.h`: SPI1 Nor-flash sector erase, page write, and config load/save.
+  - `src/main.c`: STM32 main application with TIM2 100 Hz deterministic loop and USART1 streaming.
+- **ESP32 Display & Telemetry:**
+  - `src/esp32_firmware/esp32_firmware.ino`: 320x240 ILI9341 landscape dashboard with digital readouts, horizon crosshair, and UART2 bridge.
+  - `src/esp32_standalone_sim/esp32_standalone_sim.ino`: Standalone sketch for browser 3D MPU6050 tilt simulation.
+- **Automated Host Test Suite:**
+  - `tests/test_firmware_core.c` & `Makefile`: 100% passing tests for filter math, protocol codec, ASCII commands, and flash config CRC32.
+- **Simulation Suite (Wokwi):**
+  - `diagram.json`, `wokwi.toml`, `libraries.txt`, `wokwi_standalone.json`: Complete simulation netlists.
+- **Hardware Documentation:**
+  - `docs/Wiring_and_Pinouts.md`: Complete pinout tables, ST-Link SWD, and Section 2.5 ILI9341 rectangle pinout diagram.
+  - `docs/interactive-wiring.html` & `scripts/verify_hardware_sim.js`: Interactive visual studio and automated SVG pin integrity checker (22 nets, 85 pin sockets verified).

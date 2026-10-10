@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "author": "BTL-KTVXL Group 1 D24-PTIT",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "board-esp32-devkit-c-v4",
+      "id": "esp",
+      "top": 0,
+      "left": 200,
+      "attrs": {}
+    },
+    {
+      "type": "board-stm32-f103c8",
+      "id": "stm32",
+      "top": 0,
+      "left": -180,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-ili9341",
+      "id": "tft",
+      "top": -220,
+      "left": 260,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-mpu6050",
+      "id": "mpu",
+      "top": -160,
+      "left": -140,
+      "attrs": {}
+    }
+  ],
+  "connections": [
+    [ "esp:GND.1", "tft:GND", "black", [ "v0" ] ],
+    [ "esp:3V3", "tft:VCC", "red", [ "v0" ] ],
+    [ "esp:3V3", "tft:LED", "orange", [ "v0" ] ],
+    [ "esp:18", "tft:CLK", "yellow", [ "v0" ] ],
+    [ "esp:23", "tft:MOSI", "green", [ "v0" ] ],
+    [ "esp:19", "tft:MISO", "cyan", [ "v0" ] ],
+    [ "esp:15", "tft:CS", "blue", [ "v0" ] ],
+    [ "esp:2", "tft:DC", "purple", [ "v0" ] ],
+    [ "esp:4", "tft:RST", "gray", [ "v0" ] ],
+
+    [ "stm32:GND.1", "mpu:GND", "black", [ "v0" ] ],
+    [ "stm32:3.3V.1", "mpu:VCC", "red", [ "v0" ] ],
+    [ "stm32:PB6", "mpu:SCL", "yellow", [ "v0" ] ],
+    [ "stm32:PB7", "mpu:SDA", "green", [ "v0" ] ],
+
+    [ "stm32:PA9", "esp:16", "blue", [ "v0" ] ],
+    [ "stm32:PA10", "esp:17", "purple", [ "v0" ] ],
+    [ "stm32:GND.2", "esp:GND.2", "black", [ "v0" ] ]
+  ],
+  "dependencies": {}
+}

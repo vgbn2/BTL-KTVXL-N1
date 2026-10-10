@@ -42,7 +42,7 @@ Bài tập lớn Kỹ thuật Vi xử lý - Nhóm 1 - D24-PTIT
 ### 2.1 STM32F103C8T6 (Blue Pill)
 ```
                           +-----[ USB ]-----+
-             [B12]  PB12 -| [ ]         [ ] |- 5V     [5V Power In]
+             [B12]  PB12 -| [ ]         [ ] |- GND    [System GND]
       (SPI2) [B13]  PB13 -|                 |- GND    [System GND]
       (SPI2) [B14]  PB14 -|                 |- 3V3    [3.3V Output]
       (SPI2) [B15]  PB15 -|                 |- NRST   [Reset]
@@ -67,36 +67,35 @@ Bài tập lớn Kỹ thuật Vi xử lý - Nhóm 1 - D24-PTIT
                           +-----------------+
 ```
 
-### 2.2 ESP32 DevKit (30-Pin / 38-Pin Module)
+### 2.2 ESP32 DevKit (30-Pin Type-C Module)
 ```
-                          +-----[ USB ]-----+
-                     EN  -|                 |- D23  (GPIO 23 / VSPI MOSI)
-           (ADC)    VP   -|                 |- D22  (GPIO 22 / I2C SCL)
-           (ADC)    VN   -|                 |- TX0  (GPIO 1  / Debug TX)
-                    D34  -|                 |- RX0  (GPIO 3  / Debug RX)
-                    D35  -|                 |- D21  (GPIO 21 / I2C SDA)
-                    D32  -|                 |- D19  (GPIO 19 / VSPI MISO)
-                    D33  -|    ESP-WROOM    |- D18  (GPIO 18 / VSPI SCK)
-                    D25  -|       32        |- D5   (GPIO 5)
-                    D26  -|                 |- D4   (GPIO 4  / TFT RST)
-                    D27  -|                 |- D2   (GPIO 2  / TFT DC)
-(TFT CS)   (VSPI)   D14  -|                 |- D15  (GPIO 15 / TFT CS)
-(STM32 TX) (UART2)  D12  -|                 |- D13  (GPIO 13)
-(STM32 RX) (UART2)  D13  -|                 |- D12  (GPIO 12)
-(UART2 RX)          D16  -|                 |- GND  (Ground)
-(UART2 TX)          D17  -|                 |- 5V / VIN (5V In)
-                    GND  -|                 |- 3V3  (3.3V Out)
-                          +-----------------+
+                          +-----[ TYPE-C ]-----+
+           (Reset)   EN  -| [ ]            [ ] |- D23  (GPIO 23 / VSPI MOSI)
+           (ADC)     VP  -|                    |- D22  (GPIO 22 / I2C SCL)
+           (ADC)     VN  -|                    |- TX0  (GPIO 1  / Debug TX)
+           (Input)   D34 -|                    |- RX0  (GPIO 3  / Debug RX)
+           (Input)   D35 -|                    |- D21  (GPIO 21 / I2C SDA)
+           (ADC/DAC) D32 -|                    |- D19  (GPIO 19 / VSPI MISO)
+           (ADC/DAC) D33 -|     ESP-WROOM-32   |- D18  (GPIO 18 / VSPI SCK)
+           (DAC1)    D25 -|     CH340 (30P)    |- D5   (GPIO 5)
+           (DAC2)    D26 -|                    |- TX2  (GPIO 17 / UART2 TX)
+           (ADC)     D27 -|                    |- RX2  (GPIO 16 / UART2 RX)
+           (HSPI)    D14 -|                    |- D4   (GPIO 4  / TFT RST)
+           (HSPI)    D12 -|                    |- D2   (GPIO 2  / TFT DC)
+           (HSPI)    D13 -|                    |- D15  (GPIO 15 / TFT CS)
+           (Power)   GND -|                    |- GND  (Ground)
+(5V Input) (Power)   VIN -|                    |- 3V3  (3.3V Power Out)
+                          +--------------------+
 ```
 
 ### 2.3 GY-521 (MPU6050) 8-Pin Breakout Pinout
 ```
          +-----------------------+
          |     GY-521 (MPU6050)  |
-   [1] --| VCC  (3.3V - 5V)      |
-   [2] --| GND  (Ground)         |
-   [3] --| SCL  (I2C Clock)      |  --> STM32 PB6
-   [4] --| SDA  (I2C Data)       |  --> STM32 PB7
+   [1] --| VCC  (3.3V - 5V)      |  --> STM32 3.3V
+   [2] --| GND  (Ground)         |  --> STM32 GND
+   [3] --| SCL  (I2C Clock)      |  --> STM32 PB6 (I2C1_SCL)
+   [4] --| SDA  (I2C Data)       |  --> STM32 PB7 (I2C1_SDA)
    [5] --| XDA  (Aux I2C Data)   |  (NC - Không nối)
    [6] --| XCL  (Aux I2C Clock)  |  (NC - Không nối)
    [7] --| AD0  (Address LSB)    |  --> Nối GND (Địa chỉ 0x68)
@@ -104,19 +103,45 @@ Bài tập lớn Kỹ thuật Vi xử lý - Nhóm 1 - D24-PTIT
          +-----------------------+
 ```
 
-### 2.4 W25QXX (W25Q64) 8-Pin SPI Flash Module Pinout
+### 2.4 Module Flash W25Q64 (6-Pin Breakout - [Lập Trình Nhúng A-Z][135])
 ```
          +-----------------------+
-         |   W25QXX SPI FLASH    |
-   [1] --| /CS  (Chip Select)    |  --> STM32 PA4
-   [2] --| DO   (MISO Data Out)  |  --> STM32 PA6
-   [3] --| /WP  (Write Protect)  |  --> Nối 3.3V (Cho phép ghi)
-   [4] --| GND  (Ground)         |  --> Nối GND chung
-   [5] --| DI   (MOSI Data In)   |  --> STM32 PA7
-   [6] --| CLK  (SPI Clock)      |  --> STM32 PA5
-   [7] --| /HOLD(Pause / Reset)  |  --> Nối 3.3V (Hoạt động bình thường)
-   [8] --| VCC  (Power Supply)   |  --> STM32 3.3V (2.7V - 3.6V CHỈ 3.3V!)
+         |   W25Q64 SPI MODULE   |
+   [1] --| VCC  (Power Supply)   |  --> STM32 3.3V (2.7V - 3.6V CHỈ 3.3V!)
+   [2] --| CS   (Chip Select)    |  --> STM32 PA4 (SPI1_NSS)
+   [3] --| DO   (MISO Data Out)  |  --> STM32 PA6 (SPI1_MISO)
+   [4] --| GND  (Ground)         |  --> STM32 GND
+   [5] --| CLK  (SPI Clock)      |  --> STM32 PA5 (SPI1_SCK)
+   [6] --| DI   (MOSI Data In)   |  --> STM32 PA7 (SPI1_MOSI)
+         |                       |
+         | * Onboard SMD pull-up |
+         |   resistors on WP# &  |
+         |   HOLD# to VCC        |
          +-----------------------+
+```
+
+### 2.5 Màn Hình ILI9341 2.8" SPI TFT (Chuẩn Red PCB 14-Pin / 18-Pin Header)
+```
+           +----------------------------------------+
+           |          ILI9341 2.8" SPI TFT          |
+           |  [Header Pins]     [ LCD Screen Area ] |
+     [1] --|  VCC (3.3V/5V)   +-------------------+ |  --> ESP32 5V / 3.3V (Nguồn chính)
+     [2] --|  GND (Ground)    |                   | |  --> ESP32 GND (Mass chung)
+     [3] --|  CS              |                   | |  --> ESP32 GPIO 15 (VSPI_CS)
+     [4] --|  RESET / RST     |    320 x 240      | |  --> ESP32 GPIO 4  (Reset màn hình)
+     [5] --|  DC / RS         |    COLOR TFT      | |  --> ESP32 GPIO 2  (Command/Data)
+     [6] --|  SDI / MOSI      |    DISPLAY        | |  --> ESP32 GPIO 23 (VSPI_MOSI)
+     [7] --|  SCK / CLK       |                   | |  --> ESP32 GPIO 18 (VSPI_SCK)
+     [8] --|  LED / BLK       |                   | |  --> ESP32 3.3V / GPIO 5 (Đèn nền)
+     [9] --|  SDO / MISO      +-------------------+ |  --> ESP32 GPIO 19 (Tùy chọn)
+           |                                        |
+           |  * Chân cảm ứng XPT2046 phụ:           |
+    [10] --|  T_CLK           (NC - Không nối)      |
+    [11] --|  T_CS            (NC - Không nối)      |
+    [12] --|  T_DIN           (NC - Không nối)      |
+    [13] --|  T_DO            (NC - Không nối)      |
+    [14] --|  T_IRQ           (NC - Không nối)      |
+           +----------------------------------------+
 ```
 
 ---
@@ -126,26 +151,25 @@ Bài tập lớn Kỹ thuật Vi xử lý - Nhóm 1 - D24-PTIT
 ### 3.1 STM32F103 ⟷ Cảm Biến MPU6050 (GY-521 qua I2C1)
 | MPU6050 Pin | STM32 Pin | Chức Năng | Chú Thích Kỹ Thuật |
 | :--- | :--- | :--- | :--- |
-| **VCC** | **3.3V** / **5V** | Nguồn | GY-521 có sẵn IC hạ áp 3.3V (KB33/AMS1117) |
+| **VCC** | **3.3V** | Nguồn | Cấp 3.3V trực tiếp giúp cảm biến chạy mát và ổn định |
 | **GND** | **GND** | Ground chung | Nối chung mass toàn hệ thống |
 | **SCL** | **PB6** | I2C1_SCL | 5V-tolerant, GY-521 đã có trở kéo 4.7kΩ lên 3.3V |
 | **SDA** | **PB7** | I2C1_SDA | 5V-tolerant, GY-521 đã có trở kéo 4.7kΩ lên 3.3V |
 | **AD0** | **GND** | Địa chỉ I2C | Nối GND để chọn địa chỉ `0x68` (Nối 3.3V là `0x69`) |
-| **INT** | **PB5** (Tùy chọn)| Ngắt dữ liệu | Báo khi có mẫu đo mới (100Hz) |
+| **INT** | **PB5** (Tùy chọn)| Ngắt dữ liệu | Báo khi có mẫu đo mới (100Hz Data Ready) |
 
 ---
 
-### 3.2 STM32F103 ⟷ Flash W25Q64 (qua SPI1)
+### 3.2 STM32F103 ⟷ Module Flash W25Q64 (6-Pin Breakout qua SPI1)
 | W25Q64 Pin | STM32 Pin | Chức Năng | Điện Áp & Lưu Ý |
 | :--- | :--- | :--- | :--- |
 | **VCC** | **3.3V** | Nguồn (2.7V - 3.6V) | **Chỉ cấp 3.3V**, KHÔNG cấp 5V vào chip W25Q |
-| **GND** | **GND** | Ground | Nối chung mass |
-| **CS / NSS** | **PA4** | SPI1 Chip Select | Xuất mức LOW khi truyền/nhận |
-| **CLK / SCK**| **PA5** | SPI1 Clock | Xung nhịp SPI Master (tối đa 36 MHz) |
-| **DO / MISO**| **PA6** | SPI1 Master In | Dữ liệu từ Flash đọc về STM32 |
-| **DI / MOSI**| **PA7** | SPI1 Master Out | Dữ liệu từ STM32 ghi sang Flash |
-| **WP** | **3.3V** | Write Protect | Tích cực mức LOW. Nối 3.3V để cho phép ghi dữ liệu |
-| **HOLD** | **3.3V** | Tạm dừng SPI | Tích cực mức LOW. Nối 3.3V để hoạt động bình thường |
+| **CS / NSS** | **PA4** | SPI1 Chip Select | Xuất mức LOW khi truyền/nhận lệnh SPI |
+| **DO / MISO**| **PA6** | SPI1 Master In | Dữ liệu từ Flash đọc về STM32 (Bias calibration) |
+| **GND** | **GND** | Ground | Nối chung mass toàn hệ thống |
+| **CLK / SCK**| **PA5** | SPI1 Clock | Xung nhịp SPI Master (tối đa 36 MHz trên APB2) |
+| **DI / MOSI**| **PA7** | SPI1 Master Out | Dữ liệu từ STM32 ghi sang Flash (Lưu offset & alpha) |
+| *WP# / HOLD#*| *Tích hợp sẵn*| Auto Pull-Up | Board breakout đã hàn sẵn trở kéo lên VCC |
 
 ---
 

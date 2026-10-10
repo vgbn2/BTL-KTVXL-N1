@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "author": "BTL-KTVXL Group 1 D24-PTIT",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "board-esp32-devkit-c-v4",
+      "id": "esp",
+      "top": 0,
+      "left": 0,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-ili9341",
+      "id": "tft",
+      "top": -260,
+      "left": 100,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-mpu6050",
+      "id": "mpu",
+      "top": -180,
+      "left": -160,
+      "attrs": {}
+    }
+  ],
+  "connections": [
+    [ "esp:GND.1", "tft:GND", "black", [ "v0" ] ],
+    [ "esp:3V3", "tft:VCC", "red", [ "v0" ] ],
+    [ "esp:3V3", "tft:LED", "orange", [ "v0" ] ],
+    [ "esp:18", "tft:CLK", "yellow", [ "v0" ] ],
+    [ "esp:23", "tft:MOSI", "green", [ "v0" ] ],
+    [ "esp:15", "tft:CS", "blue", [ "v0" ] ],
+    [ "esp:2", "tft:DC", "purple", [ "v0" ] ],
+    [ "esp:4", "tft:RST", "gray", [ "v0" ] ],
+
+    [ "esp:GND.2", "mpu:GND", "black", [ "v0" ] ],
+    [ "esp:3V3", "mpu:VCC", "red", [ "v0" ] ],
+    [ "esp:22", "mpu:SCL", "yellow", [ "v0" ] ],
+    [ "esp:21", "mpu:SDA", "green", [ "v0" ] ]
+  ],
+  "dependencies": {}
+}
