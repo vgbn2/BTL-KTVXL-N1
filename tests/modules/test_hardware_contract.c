@@ -144,7 +144,8 @@ int test_hardware_contract(void) {
     uint8_t stop_bits = 1;
     char parity = 'N';
     bool echo_enabled = true;
-    if (baud_target != 115200 || data_bits != 8 || stop_bits != 1 || parity != 'N' || !echo_enabled) {
+    bool tty_spawn_supported = true;
+    if (baud_target != 115200 || data_bits != 8 || stop_bits != 1 || parity != 'N' || !echo_enabled || !tty_spawn_supported) {
         printf("    FAIL: UART contract mismatch!\n");
         failed++;
     }
