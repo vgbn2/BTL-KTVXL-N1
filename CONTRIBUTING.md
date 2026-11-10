@@ -85,7 +85,7 @@ git status --short                                                              
 cc --version && cmake --version && python3 --version                                      # Confirm native C99 + CMake + Python 3 toolchain
 arm-none-eabi-gcc --version                                                               # Required for ARM firmware build
 bash -n scripts/*.sh scripts/linux/*.sh                                                   # Check Bash syntax across host/Linux scripts
-python3 -B -m py_compile scripts/*.py scripts/linux/*.py scripts/windows/*.py tests/repro/*.py # Bytecode-compile Python scripts without __pycache__ writes
+PYTHONPYCACHEPREFIX="${TMPDIR:-/tmp}/pycache" python3 -B -m py_compile scripts/*.py scripts/linux/*.py scripts/windows/*.py tests/repro/*.py # Bytecode-compile Python scripts without repo __pycache__ writes
 ```
 
 *Expected Healthy Signature:* All tools report valid versions, `bash -n` and `py_compile` exit `0` with no stdout/stderr errors.
