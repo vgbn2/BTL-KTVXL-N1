@@ -11,7 +11,9 @@
 
 // ===== Cau hinh USART1 =====
 #define UART_PORT USART1
+#ifndef UART_BAUDRATE
 #define UART_BAUDRATE 115200
+#endif
 #define RX_BUFFER_SIZE 128U
 #define QUEUE_SIZE 4U
  

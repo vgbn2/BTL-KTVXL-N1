@@ -3,13 +3,13 @@
 # Target: STM32F103 USART1 @ 115200 Baud, 8-N-1
 set -euo pipefail
 
-BAUD=115200
+BAUD="${BAUD:-115200}"
 USE_CLI=0
 PORT=""
 
 usage() {
-    echo "Usage: $0 [--cli|-c] [--port /dev/ttyUSB0 | /dev/ttyUSB0]"
-    echo "PuTTY (or plink with --cli): 115200 baud, 8N1, no flow control."
+    echo "Usage: $0 [--cli|-c] [--baud|-b <baud>] [--port /dev/ttyUSB0 | /dev/ttyUSB0]"
+    echo "PuTTY (or plink with --cli): configurable baud (default 115200), 8N1, no flow control."
     echo "Without a port, discover USB/ACM ports and prompt if multiple exist."
 }
 
@@ -17,6 +17,12 @@ while (($#)); do
     case "$1" in
         --cli|-c) USE_CLI=1; shift ;;
         -h|--help) usage; exit 0 ;;
+        --baud|-b)
+            if (($# < 2)) || [[ -z "$2" || "$2" == -* ]]; then
+                echo "ERROR: --baud requires a number." >&2
+                exit 2
+            fi
+            BAUD="$2"; shift 2 ;;
         --port)
             if (($# < 2)) || [[ -z "$2" || "$2" == -* ]]; then
                 echo "ERROR: --port requires a device path." >&2

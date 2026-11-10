@@ -7,11 +7,13 @@ ARM_OBJCOPY = arm-none-eabi-objcopy
 SPL_SRC_DIR = $(SPL_DIR)/Libraries/STM32F10x_StdPeriph_Driver/src
 SPL_INC_DIR = $(SPL_DIR)/Libraries/STM32F10x_StdPeriph_Driver/inc
 
+BAUD ?= 115200
+
 FIRMWARE_INC = -Isrc -Isrc/lib/shared -Isrc/lib/drivers -I$(SPL_INC_DIR) \
                -I$(SPL_DIR)/Libraries/CMSIS/CM3/CoreSupport \
                -I$(SPL_DIR)/Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x
 FIRMWARE_CFLAGS = -mcpu=cortex-m3 -mthumb -Os -Wall -Wextra -ffunction-sections -fdata-sections \
-                  -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER $(FIRMWARE_INC)
+                  -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DUART_BAUDRATE=$(BAUD) $(FIRMWARE_INC)
 FIRMWARE_LDFLAGS = -Tsrc/lib/stm32/STM32F103C8TX_FLASH.ld -u _printf_float --specs=nano.specs --specs=nosys.specs -Wl,--gc-sections
 
 FIRMWARE_C_SRCS = src/main.c \
@@ -145,7 +147,7 @@ putty:
 	if [ -z "$$PORT" ]; then \
 		for p in /dev/ttyUSB* /dev/ttyACM*; do [ -e "$$p" ] && { PORT="$$p"; break; }; done; \
 	fi; \
-	bash scripts/linux/launch_putty.sh $$PORT
+	BAUD="$(BAUD)" bash scripts/linux/launch_putty.sh $$PORT
 
 flash-putty: flash putty
 
@@ -155,17 +157,17 @@ picocom:
 		for p in /dev/ttyUSB* /dev/ttyACM*; do [ -e "$$p" ] && { PORT="$$p"; break; }; done; \
 	fi; \
 	if [ -t 0 ]; then \
-		picocom -b 115200 "$$PORT" --echo --imap lfcrlf --emap crcrlf; \
+		picocom -b $(BAUD) "$$PORT" --echo --imap lfcrlf --emap crcrlf; \
 	elif [ -n "$$DISPLAY" ] && command -v gnome-terminal >/dev/null 2>&1; then \
 		echo "--> Non-interactive shell detected; spawning and raising picocom in GUI terminal window..."; \
-		gnome-terminal --title="BTL_KTVXL picocom ($$PORT)" -- picocom -b 115200 "$$PORT" --echo --imap lfcrlf --emap crcrlf; \
+		gnome-terminal --title="BTL_KTVXL picocom ($$PORT)" -- picocom -b $(BAUD) "$$PORT" --echo --imap lfcrlf --emap crcrlf; \
 		sleep 0.3; command -v wmctrl >/dev/null 2>&1 && wmctrl -a "BTL_KTVXL picocom" || true; \
 	elif [ -n "$$DISPLAY" ] && command -v xterm >/dev/null 2>&1; then \
 		echo "--> Non-interactive shell detected; spawning and raising picocom in xterm..."; \
-		xterm -T "BTL_KTVXL picocom ($$PORT)" -e picocom -b 115200 "$$PORT" --echo --imap lfcrlf --emap crcrlf; \
+		xterm -T "BTL_KTVXL picocom ($$PORT)" -e picocom -b $(BAUD) "$$PORT" --echo --imap lfcrlf --emap crcrlf; \
 		sleep 0.3; command -v wmctrl >/dev/null 2>&1 && wmctrl -a "BTL_KTVXL picocom" || true; \
 	else \
-		picocom -b 115200 "$$PORT" --echo --imap lfcrlf --emap crcrlf; \
+		picocom -b $(BAUD) "$$PORT" --echo --imap lfcrlf --emap crcrlf; \
 	fi
 
 flash-picocom: flash picocom
