@@ -49,7 +49,7 @@ FLASH_ELF  = $(if $(filter hw-test,$(TARGET)),$(HW_TEST_ELF),$(FIRMWARE_ELF))
 TEST_ARGS  = $(if $(filter 1,$(FIRMWARE)),--firmware,) \
              $(if $(filter command line,$(origin BUILD_DIR)),--build-dir "$(BUILD_DIR)",)
 
-.PHONY: all test firmware hw-test flash monitor flash-monitor clean
+.PHONY: all test firmware hw-test flash monitor flash-monitor putty flash-putty clean
 
 all: test firmware
 
@@ -139,6 +139,15 @@ monitor:
 	fi
 
 flash-monitor: flash monitor
+
+putty:
+	@PORT="$(PORT)"; \
+	if [ -z "$$PORT" ]; then \
+		for p in /dev/ttyUSB* /dev/ttyACM*; do [ -e "$$p" ] && { PORT="$$p"; break; }; done; \
+	fi; \
+	bash scripts/linux/launch_putty.sh $$PORT
+
+flash-putty: flash putty
 
 clean:
 	rm -rf "$(BUILD_DIR)"

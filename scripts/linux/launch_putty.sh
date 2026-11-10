@@ -78,11 +78,34 @@ if [ ! -r "$PORT" ] || [ ! -w "$PORT" ]; then
     exit 1
 fi
 
-# 4. Launch either PuTTY GUI or PuTTY CLI (plink)
+# 4. Generate/update PuTTY session profile with local echo and line editing
+# Microcontroller does not echo input by default; LocalEcho=1 and LocalEdit=1 ensure
+# keystrokes display immediately and backspace/enter line buffering works cleanly.
+SESSION_DIR="${HOME}/.putty/sessions"
+mkdir -p "$SESSION_DIR"
+cat << EOF > "${SESSION_DIR}/BTL_KTVXL"
+Protocol=serial
+SerialLine=${PORT}
+SerialSpeed=${BAUD}
+SerialDataBits=8
+SerialStopHalfbits=2
+SerialParity=0
+SerialFlowControl=0
+LocalEcho=1
+LocalEdit=1
+LFImpliesCR=1
+CRImpliesLF=1
+EOF
+
+if [ ! -f "${SESSION_DIR}/Default%20Settings" ]; then
+    cp "${SESSION_DIR}/BTL_KTVXL" "${SESSION_DIR}/Default%20Settings"
+fi
+
+# 5. Launch either PuTTY GUI or PuTTY CLI (plink)
 if [ $USE_CLI -eq 1 ]; then
     echo -e "\033[1;32m--> Launching PuTTY CLI (plink) on ${PORT} @ ${BAUD} baud (8-N-1)... [Ctrl+C to exit]\033[0m"
-    exec plink -serial "$PORT" -sercfg "${BAUD},8,n,1,N"
+    exec plink -load BTL_KTVXL
 else
     echo -e "\033[1;32m--> Launching PuTTY GUI on ${PORT} @ ${BAUD} baud (8-N-1)...\033[0m"
-    exec putty -serial "$PORT" -sercfg "${BAUD},8,n,1,N"
+    exec putty -load BTL_KTVXL
 fi

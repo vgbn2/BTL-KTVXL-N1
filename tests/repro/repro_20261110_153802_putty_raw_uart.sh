@@ -14,9 +14,8 @@ python3 -B - "$root_dir" <<'PY'
 from pathlib import Path
 import sys
 root = Path(sys.argv[1])
-assert "UART_SendBanner();" in (root / "src/main.c").read_text(), "missing UART_SendBanner() in src/main.c"
-uart = (root / "src/lib/shared/uart_cmd.c").read_text()
-assert "uart_drain_echo();" in uart and "void UART_SendBanner(void)" in uart, "missing echo drain or banner"
+putty_script = (root / "scripts/linux/launch_putty.sh").read_text()
+assert "LocalEcho=1" in putty_script and "LocalEdit=1" in putty_script, "missing LocalEcho or LocalEdit configuration in launch_putty.sh"
 for rel in ("scripts/linux/flash_and_monitor.sh", "scripts/linux/launch_serial.sh"):
     assert "--echo" not in (root / rel).read_text(), f"double-echo flag left in {rel}"
 PY

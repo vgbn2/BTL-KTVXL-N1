@@ -60,7 +60,7 @@ case "$MON_OPT" in
             echo -e "\033[1;33m[ERROR] PuTTY is not installed. Install the 'putty' package and retry.\033[0m" >&2
             exit 1
         fi
-        putty -serial "$PORT" -sercfg "${BAUD},8,n,1,N" >/dev/null 2>&1 &
+        bash scripts/linux/launch_putty.sh "$PORT" >/dev/null 2>&1 &
         echo "Launched PuTTY GUI on $PORT @ $BAUD in background (PID: $!)."
         ;;
     2)

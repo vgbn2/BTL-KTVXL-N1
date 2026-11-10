@@ -129,7 +129,16 @@ echo   Launching PuTTY on %TARGET_PORT% @ 115200 8-N-1...
 echo ============================================================================
 echo.
 
-start "" /wait "!PUTTY_BIN!" -serial "!TARGET_PORT!" -sercfg 115200,8,n,1,N
+:: Configure persistent session profile with LocalEcho and LocalEdit enabled
+reg add "HKCU\Software\SimonTatham\PuTTY\Sessions\BTL_KTVXL" /v Protocol /t REG_SZ /d serial /f >nul 2>&1
+reg add "HKCU\Software\SimonTatham\PuTTY\Sessions\BTL_KTVXL" /v SerialLine /t REG_SZ /d "!TARGET_PORT!" /f >nul 2>&1
+reg add "HKCU\Software\SimonTatham\PuTTY\Sessions\BTL_KTVXL" /v SerialSpeed /t REG_DWORD /d 115200 /f >nul 2>&1
+reg add "HKCU\Software\SimonTatham\PuTTY\Sessions\BTL_KTVXL" /v LocalEcho /t REG_DWORD /d 1 /f >nul 2>&1
+reg add "HKCU\Software\SimonTatham\PuTTY\Sessions\BTL_KTVXL" /v LocalEdit /t REG_DWORD /d 1 /f >nul 2>&1
+reg add "HKCU\Software\SimonTatham\PuTTY\Sessions\BTL_KTVXL" /v LFImpliesCR /t REG_DWORD /d 1 /f >nul 2>&1
+reg add "HKCU\Software\SimonTatham\PuTTY\Sessions\BTL_KTVXL" /v CRImpliesLF /t REG_DWORD /d 1 /f >nul 2>&1
+
+start "" /wait "!PUTTY_BIN!" -load BTL_KTVXL
 exit /b %ERRORLEVEL%
 
 :usage

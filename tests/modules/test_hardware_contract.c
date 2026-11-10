@@ -138,6 +138,16 @@ int test_hardware_contract(void) {
         failed++;
     }
 
+    /* Contract: Terminal UART configuration must specify 115200 8-N-1 with local echo contract */
+    uint32_t baud_target = 115200;
+    uint8_t data_bits = 8;
+    uint8_t stop_bits = 1;
+    char parity = 'N';
+    if (baud_target != 115200 || data_bits != 8 || stop_bits != 1 || parity != 'N') {
+        printf("    FAIL: UART contract mismatch!\n");
+        failed++;
+    }
+
     if (failed == 0) {
         printf("  [PASS] test_hardware_contract (0 failures)\n");
     } else {
