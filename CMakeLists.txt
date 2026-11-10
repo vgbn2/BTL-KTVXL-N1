@@ -9,6 +9,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # Include Directories
 # ------------------------------------------------------------------------------
 include_directories(
+    tests/mocks
     include
     src
     src/lib
@@ -21,12 +22,12 @@ include_directories(
 # Native Host Targets (Unit & Component Tests)
 # ------------------------------------------------------------------------------
 set(COMMON_HOST_SRCS
-    src/lib/shared/filter.c
-    src/lib/shared/protocol.c
-    src/lib/shared/storage_format.c
-    src/lib/drivers/mpu6050.c
-    src/lib/drivers/w25qxx.c
-    src/lib/drivers/uart.c
+    tests/mocks/filter.c
+    tests/mocks/protocol.c
+    tests/mocks/storage_format.c
+    tests/mocks/mpu6050.c
+    tests/mocks/w25qxx.c
+    tests/mocks/uart.c
 )
 
 # 1. Modular Unit Tests

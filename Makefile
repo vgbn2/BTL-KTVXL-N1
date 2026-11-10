@@ -12,17 +12,17 @@ FIRMWARE_INC = -Isrc -Isrc/lib/shared -Isrc/lib/drivers -I$(SPL_INC_DIR) \
                -I$(SPL_DIR)/Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x
 FIRMWARE_CFLAGS = -mcpu=cortex-m3 -mthumb -Os -Wall -Wextra -ffunction-sections -fdata-sections \
                   -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER $(FIRMWARE_INC)
-FIRMWARE_LDFLAGS = -Tsrc/lib/stm32/STM32F103C8TX_FLASH.ld --specs=nano.specs --specs=nosys.specs -Wl,--gc-sections
+FIRMWARE_LDFLAGS = -Tsrc/lib/stm32/STM32F103C8TX_FLASH.ld -u _printf_float --specs=nano.specs --specs=nosys.specs -Wl,--gc-sections
 
 FIRMWARE_C_SRCS = src/main.c \
                   src/lib/drivers/ili9341.c \
                   src/lib/drivers/display_system.c \
                   src/lib/drivers/mpu6050.c \
                   src/lib/drivers/flash_config.c \
-                  src/lib/drivers/system_time.c \
+                  src/lib/drivers/uart_cmd.c \
+                  src/lib/shared/system_time.c \
                   src/lib/shared/angle_filter.c \
-                  src/lib/shared/calibration.c \
-                  src/lib/shared/uart_cmd.c
+                  src/lib/shared/calibration.c
 FIRMWARE_STARTUP = $(SPL_DIR)/Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/TrueSTUDIO/startup_stm32f10x_md.s
 FIRMWARE_SPL_SRCS = $(addprefix $(SPL_SRC_DIR)/,misc.c stm32f10x_gpio.c \
                     stm32f10x_rcc.c stm32f10x_spi.c stm32f10x_tim.c stm32f10x_usart.c)
@@ -49,7 +49,7 @@ FLASH_ELF  = $(if $(filter hw-test,$(TARGET)),$(HW_TEST_ELF),$(FIRMWARE_ELF))
 TEST_ARGS  = $(if $(filter 1,$(FIRMWARE)),--firmware,) \
              $(if $(filter command line,$(origin BUILD_DIR)),--build-dir "$(BUILD_DIR)",)
 
-.PHONY: all test firmware hw-test flash clean
+.PHONY: all test firmware hw-test flash monitor flash-monitor clean
 
 all: test firmware
 
@@ -111,7 +111,34 @@ flash: $(TARGET)
 		fi; \
 		[ -n "$$PORT" ] && python3 -B scripts/agent_uart.py --port "$$PORT" --command GET_ANGLE --timeout 0.5 || { echo "[ERROR] UART=1 requested but no serial check succeeded" >&2; exit 1; }; \
 	fi
-	@if [ "$(PUTTY)" = "1" ]; then bash scripts/linux/launch_putty.sh $(PORT); fi
+	@if [ "$(PUTTY)" = "1" ] || [ "$(MONITOR)" = "1" ]; then \
+		PORT="$(PORT)"; \
+		if [ -z "$$PORT" ]; then \
+			for p in /dev/ttyUSB* /dev/ttyACM*; do [ -e "$$p" ] && { PORT="$$p"; break; }; done; \
+		fi; \
+		if [ -n "$$DISPLAY" ] && command -v putty >/dev/null 2>&1; then \
+			bash scripts/linux/launch_putty.sh $$PORT; \
+		elif command -v plink >/dev/null 2>&1; then \
+			bash scripts/linux/launch_putty.sh --cli $$PORT; \
+		elif [ -t 0 ]; then \
+			bash scripts/linux/launch_serial.sh; \
+		fi; \
+	fi
+
+monitor:
+	@PORT="$(PORT)"; \
+	if [ -z "$$PORT" ]; then \
+		for p in /dev/ttyUSB* /dev/ttyACM*; do [ -e "$$p" ] && { PORT="$$p"; break; }; done; \
+	fi; \
+	if [ -n "$$DISPLAY" ] && command -v putty >/dev/null 2>&1; then \
+		bash scripts/linux/launch_putty.sh $$PORT; \
+	elif command -v plink >/dev/null 2>&1; then \
+		bash scripts/linux/launch_putty.sh --cli $$PORT; \
+	else \
+		bash scripts/linux/launch_serial.sh; \
+	fi
+
+flash-monitor: flash monitor
 
 clean:
 	rm -rf "$(BUILD_DIR)"

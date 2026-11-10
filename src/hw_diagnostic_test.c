@@ -216,8 +216,8 @@ int main(void) {
     /* TEST 4: W25Qxx SPI Flash JEDEC ID */
     uart_print("[TEST 4/6] W25Qxx SPI1 NOR Flash (PA4-PA7)... ");
     uint32_t jedec = spi_flash_probe_jedec();
-    if ((jedec >> 16) == 0xEF) {
-        uart_print("[PASS] (Winbond Flash confirmed, JEDEC: ");
+    if ((jedec >> 16) == 0xEF || jedec == 0x204016) {
+        uart_print("[PASS] (Flash confirmed, JEDEC: ");
         uart_print_hex24(jedec);
         uart_print(")\r\n");
         passed_tests++;

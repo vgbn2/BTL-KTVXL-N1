@@ -17,8 +17,8 @@
    (1) VCC         -----------------------------------------> 5V Power Rail
    (2) GND         -----------------------------------------> System GND Rail
    (3) CS          -----------------------------------------> STM32 PB12
-   (4) RESET       -----------------------------------------> STM32 PB0
-   (5) DC / RS     -----------------------------------------> STM32 PB1
+   (4) RESET       -----------------------------------------> STM32 PB11
+   (5) DC / RS     -----------------------------------------> STM32 PB10
    (6) SDI / MOSI  -----------------------------------------> STM32 PB15
    (7) SCK         -----------------------------------------> STM32 PB13
    (8) LED (BL)    -----------------------------------------> 3.3V Power Rail (Backlight ON)
@@ -56,10 +56,10 @@
       | PB13 -> TFT SCK            |         | GND  -> System GND Rail    |
       | PB14 -> [NC]               |         | 3V3  -> 3.3V Power Rail    |
       | PB15 -> TFT MOSI           |         | NRST -> [Reset Button]     |
-      | PA8  -> [NC]               |         | PB11 -> [NC]               |
-      | PA9  -> PC TXD (115200)    |         | PB10 -> [NC]               |
-      | PA10 -> PC RXD (115200)    |         | PB1  -> TFT DC / RS        |
-      | PA11 -> [NC]               |         | PB0  -> TFT RESET          |
+      | PA8  -> [NC]               |         | PB11 -> TFT RESET          |
+      | PA9  -> PC TXD (115200)    |         | PB10 -> TFT DC / RS        |
+      | PA10 -> PC RXD (115200)    |         | PB1  -> [NC]               |
+      | PA11 -> [NC]               |         | PB0  -> [NC]               |
       | PA12 -> [NC]               |         | PA7  -> Flash DI (MOSI)    |
       | PA13 -> ST-Link SWDIO      |         | PA6  -> Flash DO (MISO)    |
       | PA14 -> ST-Link SWCLK      |         | PA5  -> Flash SCK (CLK)    |
@@ -92,8 +92,8 @@ Use this checklist to wire and verify all connections on the breadboard:
 | **1** | **TFT LCD** | VCC | **5V Power Rail** | Red | Power module (via onboard 3.3V LDO) |
 | **2** | **TFT LCD** | GND | **System GND Rail** | Black | Ground |
 | **3** | **TFT LCD** | CS | **STM32 PB12** | Purple | SPI2 Chip Select |
-| **4** | **TFT LCD** | RESET | **STM32 PB0** | Brown | Hardware Reset |
-| **5** | **TFT LCD** | DC | **STM32 PB1** | Orange | Data/Command Mode Select |
+| **4** | **TFT LCD** | RESET | **STM32 PB11** | Brown | Hardware Reset |
+| **5** | **TFT LCD** | DC | **STM32 PB10** | Orange | Data/Command Mode Select |
 | **6** | **TFT LCD** | SDI / MOSI | **STM32 PB15** | Green | SPI2 Data (Master Out) |
 | **7** | **TFT LCD** | SCK | **STM32 PB13** | Yellow | SPI2 Clock |
 | **8** | **TFT LCD** | LED | **3.3V Power Rail** | Red | Backlight power (Always ON) |
@@ -120,7 +120,7 @@ Use this checklist to wire and verify all connections on the breadboard:
 | Peripheral Bus | Pins Used | Clock Speed | Dedicated Purpose |
 |:---|:---|:---|:---|
 | **SPI1** | PA4 (CS), PA5 (SCK), PA6 (MISO), PA7 (MOSI) | 18 MHz | Winbond W25Q64 NOR Flash (Calibration & Logs) |
-| **SPI2** | PB12 (CS), PB13 (SCK), PB15 (MOSI), PB0 (RST), PB1 (DC) | 18 MHz | ILI9341 2.8\" Color TFT Display (Live Visuals) |
+| **SPI2** | PB12 (CS), PB13 (SCK), PB15 (MOSI), PB11 (RST), PB10 (DC) | 18 MHz | ILI9341 2.8\" Color TFT Display (Live Visuals) |
 | **I2C1** | PB6 (SCL), PB7 (SDA) | 400 kHz | MPU-6050 IMU Data Sampling (100 Hz Loop) |
 | **USART1** | PA9 (TX), PA10 (RX) | 115200 bps | Telemetry stream & ASCII CLI parser |
 | **SWD** | PA13 (SWDIO), PA14 (SWCLK) | 4 MHz | ST-Link V2 In-Circuit Flash & Debug |

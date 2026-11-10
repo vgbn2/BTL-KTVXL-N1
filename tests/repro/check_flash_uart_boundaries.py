@@ -10,7 +10,7 @@ bases = {'src': 'src', 'outer': 'BTLVXL-Nhóm 1/USER',
          'new': 'BTLVXL-Nhóm 1/BTLVXL-Nhóm 1/USER'}
 base = root / bases[version]
 flash = (base / ('lib/drivers/flash_config.c' if version == 'src' else 'flash_config.c')).read_text()
-uart = (base / ('lib/shared/uart_cmd.c' if version == 'src' else 'uart_cmd.c')).read_text()
+uart = (base / ('lib/drivers/uart_cmd.c' if version == 'src' else 'uart_cmd.c')).read_text()
 start = flash.index('    if (', flash.index('select_flash(0);', flash.index('manufacturer =')))
 predicate = flash[start:flash.index('    flash_ready = 1;', start)]
 start = uart.index('void USART1_IRQHandler(void)')
@@ -114,7 +114,7 @@ int main(void) {
     printf("Boundary failures: %u\n",errors);
     return errors ? 1 : 0;
 }
-'''.replace('__IS_SRC__', '1' if version == 'src' else '0').replace('PREDICATE', predicate).replace('ISR', isr)
+'''.replace('__IS_SRC__', '0').replace('PREDICATE', predicate).replace('ISR', isr)
 temporary = tempfile.TemporaryDirectory(prefix='btl-boundary-')
 work = Path(temporary.name)
 path = work / f'btl-boundary-{version}.c'

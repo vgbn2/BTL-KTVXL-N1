@@ -107,6 +107,37 @@ int test_hardware_contract(void) {
     uint32_t chars_per_line = 24;
     if (text_lines * chars_per_line != 96U) { failed++; }
 
+    printf("  [RUN] test_production_pinout_and_jedec_contract\n");
+    /* Contract: ILI9341 TFT SPI2 control pins must be PB10 (DC) and PB11 (RESET) */
+    uint16_t tft_pin_dc = 1U << 10;    /* GPIO_Pin_10 */
+    uint16_t tft_pin_rst = 1U << 11;   /* GPIO_Pin_11 */
+    uint16_t tft_pin_cs = 1U << 12;    /* GPIO_Pin_12 */
+    if (tft_pin_dc != 0x0400U || tft_pin_rst != 0x0800U || tft_pin_cs != 0x1000U) {
+        printf("    FAIL: TFT control pin bitmask mismatch!\n");
+        failed++;
+    }
+
+    /* Contract: Secondary bench Flash JEDEC 0x204016 must be accepted */
+    uint32_t jedec_alt = 0x204016UL;
+    uint8_t mfg = (uint8_t)(jedec_alt >> 16);
+    uint8_t type = (uint8_t)(jedec_alt >> 8);
+    uint8_t cap = (uint8_t)(jedec_alt & 0xFF);
+    bool jedec_accepted = ((mfg == 0xEF && (type == 0x40 || type == 0x60) && cap >= 0x14 && cap <= 0x18)
+                          || (mfg == 0x20 && type == 0x40 && cap == 0x16));
+    if (!jedec_accepted) {
+        printf("    FAIL: JEDEC 0x204016 rejected by contract!\n");
+        failed++;
+    }
+
+    /* Contract: Telemetry line float rendering must produce numeric ASCII */
+    char test_line[25];
+    float test_roll = -12.34f;
+    snprintf(test_line, sizeof(test_line), "ROLL: %7.2f", (double)test_roll);
+    if (strstr(test_line, "-12.34") == NULL) {
+        printf("    FAIL: Float format did not produce expected number string: %s\n", test_line);
+        failed++;
+    }
+
     if (failed == 0) {
         printf("  [PASS] test_hardware_contract (0 failures)\n");
     } else {

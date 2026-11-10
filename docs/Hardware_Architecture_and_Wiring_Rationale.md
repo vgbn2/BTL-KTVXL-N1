@@ -30,8 +30,8 @@ All system peripherals are directly controlled by the centralized STM32F103C8T6 
 |   - PB7: I2C1_SDA                  |   - PA5: SPI1_SCK                 |   - PB13: SPI2_SCK             |
 |   - Dual MPU6050 IMUs:             |   - PA6: SPI1_MISO                |   - PB14: SPI2_MISO (Opt)      |
 |     * MPU1 (AD0=GND): Addr 0x68    |   - PA7: SPI1_MOSI                |   - PB15: SPI2_MOSI            |
-|     * MPU2 (AD0=3V3): Addr 0x69    |   - Winbond W25Q64 8MB Flash      |   - PB0:  TFT_RST              |
-|                                    |     (Calibration & Alpha store)   |   - PB1:  TFT_DC               |
+|     * MPU2 (AD0=3V3): Addr 0x69    |   - Winbond W25Q64 8MB Flash      |   - PB11: TFT_RST              |
+|                                    |     (Calibration & Alpha store)   |   - PB10: TFT_DC               |
 |                                    |                                   |   - ILI9341 2.8" SPI TFT LCD   |
 +------------------------------------+-----------------------------------+--------------------------------+
 |                                    USART1 (APB2 @ 72 MHz)                                               |
@@ -143,14 +143,14 @@ The physical module features a 6-pin single-row interface with onboard pull-ups 
 
 ---
 
-### 2.3 SPI2 Bus Dynamics (STM32 PB12..PB15, PB0, PB1 ⟷ ILI9341 2.8" TFT)
+### 2.3 SPI2 Bus Dynamics (STM32 PB12..PB15, PB10, PB11 ⟷ ILI9341 2.8" TFT)
 
 ```
         STM32F103 (Master)                         ILI9341 2.8" SPI TFT Header
      +--------------------+                       +-------------------------------+
      | PB12 (TFT_CS) -----+──────────────────────►│ Pin 3: CS (Chip Select)       |
-     | PB0  (TFT_RST) ----+──────────────────────►│ Pin 4: RESET (Hardware Reset) |
-     | PB1  (TFT_DC) -----+──────────────────────►│ Pin 5: DC / RS (Data/Command) |
+     | PB11 (TFT_RST) ----+──────────────────────►│ Pin 4: RESET (Hardware Reset) |
+     | PB10 (TFT_DC) -----+──────────────────────►│ Pin 5: DC / RS (Data/Command) |
      | PB15 (SPI2_MOSI) --+──────────────────────►│ Pin 6: SDI / MOSI (Data In)   |
      | PB13 (SPI2_SCK) ---+──────────────────────►│ Pin 7: SCK (SPI Clock)        |
      | 5V / VIN Rail -----+──────────────────────►│ Pin 1: VCC (LDO Input)        |
@@ -210,7 +210,7 @@ The entire breadboard assembly is supplied through the primary 5V USB Type-C bus
 | **FM-02** | **AD0 Floating Address Desync** | Mechanical breadboard contact failure on GY-521 pin 7 | Address flips between 0x68 and 0x69; sensor read returns `0xFF` | 8 | 5 | 2 | **80** | Hardwire MPU1 AD0 to GND, MPU2 AD0 to 3.3V; firmware validates WHO_AM_I for both addresses. |
 | **FM-03** | **SPI Bus Contention** | Shared SPI bus between Flash and Display causing CS conflicts | Display redraw corrupts flash write or locks SPI bus | 8 | 4 | 2 | **64** | **Dedicated hardware SPI isolation:** W25Q64 on SPI1, ILI9341 on SPI2. |
 | **FM-04** | **Flash Overvoltage Degradation** | VCC of W25Q64 connected to 5V rail instead of 3.3V | Irreversible dielectric breakdown of 65nm NOR cells | 10 | 2 | 2 | **40** | Physical circuit verification; explicit 3.3V rail color-coded isolation in wiring guides. |
-| **FM-05** | **TFT White Screen (Blank)** | Incorrect wiring on CS (PB12), DC (PB1), or RST (PB0) | LCD controller fails to receive initialization sequence commands | 6 | 4 | 1 | **24** | Verified pin mapping against wiring reference; dedicated hardware reset pulse sequence (10ms-50ms-150ms). |
+| **FM-05** | **TFT White Screen (Blank)** | Incorrect wiring on CS (PB12), DC (PB10), or RST (PB11) | LCD controller fails to receive initialization sequence commands | 6 | 4 | 1 | **24** | Verified pin mapping against wiring reference; dedicated hardware reset pulse sequence (10ms-50ms-150ms). |
 | **FM-06** | **Gyroscope Thermal Zero-Bias Drift** | Sensor self-heating ($3.9\text{ mA}$) shifts zero-rate output | Estimated pitch/roll angle drifts over time by $1\text{–}3^\circ$ | 5 | 6 | 4 | **120** | Static bias calibration routine at boot; calibrated offset coefficients stored in W25Q64 Flash. |
 
 ---
