@@ -49,7 +49,7 @@ FLASH_ELF  = $(if $(filter hw-test,$(TARGET)),$(HW_TEST_ELF),$(FIRMWARE_ELF))
 TEST_ARGS  = $(if $(filter 1,$(FIRMWARE)),--firmware,) \
              $(if $(filter command line,$(origin BUILD_DIR)),--build-dir "$(BUILD_DIR)",)
 
-.PHONY: all test firmware hw-test flash monitor flash-monitor putty flash-putty clean
+.PHONY: all test firmware hw-test flash monitor flash-monitor putty flash-putty picocom flash-picocom clean
 
 all: test firmware
 
@@ -148,6 +148,15 @@ putty:
 	bash scripts/linux/launch_putty.sh $$PORT
 
 flash-putty: flash putty
+
+picocom:
+	@PORT="$(PORT)"; \
+	if [ -z "$$PORT" ]; then \
+		for p in /dev/ttyUSB* /dev/ttyACM*; do [ -e "$$p" ] && { PORT="$$p"; break; }; done; \
+	fi; \
+	picocom -b 115200 "$$PORT" --echo --imap lfcrlf --emap crcrlf
+
+flash-picocom: flash picocom
 
 clean:
 	rm -rf "$(BUILD_DIR)"

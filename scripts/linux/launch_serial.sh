@@ -57,7 +57,7 @@ case "$TOOL_CHOICE" in
             exit 1
         fi
         echo "Starting picocom (exit with Ctrl+A then Ctrl+X)..."
-        picocom -b 115200 "$PORT" --imap lfcrlf
+        picocom -b 115200 "$PORT" --echo --imap lfcrlf --emap crcrlf
         ;;
     3)
         if ! command -v cutecom >/dev/null 2>&1; then

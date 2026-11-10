@@ -143,7 +143,8 @@ int test_hardware_contract(void) {
     uint8_t data_bits = 8;
     uint8_t stop_bits = 1;
     char parity = 'N';
-    if (baud_target != 115200 || data_bits != 8 || stop_bits != 1 || parity != 'N') {
+    bool echo_enabled = true;
+    if (baud_target != 115200 || data_bits != 8 || stop_bits != 1 || parity != 'N' || !echo_enabled) {
         printf("    FAIL: UART contract mismatch!\n");
         failed++;
     }
