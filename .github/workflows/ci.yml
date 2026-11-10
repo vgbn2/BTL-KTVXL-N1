@@ -20,8 +20,6 @@ jobs:
     name: Offline host checks and ARM firmware
     runs-on: ubuntu-24.04
     timeout-minutes: 15
-    env:
-      PYTHONPYCACHEPREFIX: ${{ runner.temp }}/pycache
     defaults:
       run:
         shell: bash
@@ -38,8 +36,8 @@ jobs:
 
       - name: Script syntax sanity checks
         run: |
-          bash -n scripts/*.sh scripts/linux/*.sh
-          python3 -B -m py_compile scripts/*.py scripts/linux/*.py scripts/windows/*.py tests/repro/*.py
+          bash -n scripts/*.sh scripts/linux/*.sh tests/repro/*.sh
+          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/pycache" python3 -B -m py_compile scripts/*.py scripts/linux/*.py scripts/windows/*.py tests/repro/*.py
 
       - name: Host tests, boundary checks, and UART self-test
         run: bash scripts/agent_test.sh
