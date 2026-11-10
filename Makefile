@@ -51,7 +51,7 @@ FLASH_ELF  = $(if $(filter hw-test,$(TARGET)),$(HW_TEST_ELF),$(FIRMWARE_ELF))
 TEST_ARGS  = $(if $(filter 1,$(FIRMWARE)),--firmware,) \
              $(if $(filter command line,$(origin BUILD_DIR)),--build-dir "$(BUILD_DIR)",)
 
-.PHONY: all test firmware hw-test flash monitor flash-monitor putty flash-putty picocom flash-picocom clean
+.PHONY: all test firmware hw-test test-hw flash monitor flash-monitor putty flash-putty picocom flash-picocom clean
 
 all: test firmware
 
@@ -98,6 +98,13 @@ $(HW_TEST_ELF): $(FIRMWARE_ELF) src/hw_diagnostic_test.c
 		$(FIRMWARE_DIR)/stm32f10x_tim.o $(FIRMWARE_DIR)/stm32f10x_usart.o \
 		$(FIRMWARE_DIR)/system_time.o $(FIRMWARE_DIR)/mpu6050.o \
 		$(FIRMWARE_DIR)/ili9341.o $(FIRMWARE_DIR)/uart_cmd.o -lm
+
+test-hw:
+	@PORT="$(PORT)"; \
+	if [ -z "$$PORT" ]; then \
+		for p in /dev/ttyUSB* /dev/ttyACM*; do [ -e "$$p" ] && { PORT="$$p"; break; }; done; \
+	fi; \
+	python3 -B scripts/linux/agent_hardware_test.py --mode all $${PORT:+--port "$$PORT"}
 
 flash: $(TARGET)
 	@command -v st-info >/dev/null 2>&1 && st-info --probe || true

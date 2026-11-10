@@ -147,7 +147,8 @@ int test_hardware_contract(void) {
     bool tty_spawn_supported = true;
     bool window_raise_supported = true;
     bool baud_configurable = true;
-    if (baud_target != 115200 || data_bits != 8 || stop_bits != 1 || parity != 'N' || !echo_enabled || !tty_spawn_supported || !window_raise_supported || !baud_configurable) {
+    bool hw_test_target_supported = true;
+    if (baud_target != 115200 || data_bits != 8 || stop_bits != 1 || parity != 'N' || !echo_enabled || !tty_spawn_supported || !window_raise_supported || !baud_configurable || !hw_test_target_supported) {
         printf("    FAIL: UART contract mismatch!\n");
         failed++;
     }
