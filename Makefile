@@ -157,11 +157,13 @@ picocom:
 	if [ -t 0 ]; then \
 		picocom -b 115200 "$$PORT" --echo --imap lfcrlf --emap crcrlf; \
 	elif [ -n "$$DISPLAY" ] && command -v gnome-terminal >/dev/null 2>&1; then \
-		echo "--> Non-interactive shell detected; spawning picocom in GUI terminal window..."; \
+		echo "--> Non-interactive shell detected; spawning and raising picocom in GUI terminal window..."; \
 		gnome-terminal --title="BTL_KTVXL picocom ($$PORT)" -- picocom -b 115200 "$$PORT" --echo --imap lfcrlf --emap crcrlf; \
+		sleep 0.3; command -v wmctrl >/dev/null 2>&1 && wmctrl -a "BTL_KTVXL picocom" || true; \
 	elif [ -n "$$DISPLAY" ] && command -v xterm >/dev/null 2>&1; then \
-		echo "--> Non-interactive shell detected; spawning picocom in xterm..."; \
+		echo "--> Non-interactive shell detected; spawning and raising picocom in xterm..."; \
 		xterm -T "BTL_KTVXL picocom ($$PORT)" -e picocom -b 115200 "$$PORT" --echo --imap lfcrlf --emap crcrlf; \
+		sleep 0.3; command -v wmctrl >/dev/null 2>&1 && wmctrl -a "BTL_KTVXL picocom" || true; \
 	else \
 		picocom -b 115200 "$$PORT" --echo --imap lfcrlf --emap crcrlf; \
 	fi
