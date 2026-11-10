@@ -1,4 +1,25 @@
 build/
+build-*/
+CMakeFiles/
+CMakeCache.txt
+Testing/
+compile_commands.json
 *.o
 *.bin
 *.elf
+*.hex
+*.map
+*.axf
+*.log
+__pycache__/
+*.py[cod]
+.env
+.env.*
+!.env.example
+.claude/
+.vscode/
+.idea/
+/workspace/
+/BTLVXL-Nhóm 1/
+/team_code
+/stm32_bringup/

@@ -24,12 +24,12 @@ static void test_filter_basic(void) {
     assert(fabsf(f.pitch) < 0.1f);
     assert(fabsf(f.roll) < 0.1f);
 
-    /* 45 degree pitch tilt test: ay = 16384 * sin(45 deg) = 11585, az = 11585 */
+    /* 45 degree roll tilt test (DIN 9300): ay = 16384 * sin(45 deg) = 11585, az = 11585 */
     imu_filter_init(&f, 0.5f, 0.01f);
     for (int i = 0; i < 100; i++) {
         imu_filter_update(&f, 0, 11585, 11585, 0, 0, 0);
     }
-    assert(fabsf(f.pitch - 45.0f) < 1.0f);
+    assert(fabsf(f.roll - 45.0f) < 1.0f);
 
     /* Test set_alpha bounds */
     assert(imu_filter_set_alpha(&f, 0.95f) == true);
@@ -130,12 +130,35 @@ static void test_storage_config(void) {
     printf("[PASS] test_storage_config passed.\n");
 }
 
+static void test_hardware_limits(void) {
+    printf("[TEST] Running test_hardware_limits...\n");
+    /* Invariant 1: Telemetry frame size must comfortably fit inside UART TX buffer */
+    assert(TELEMETRY_FRAME_LEN < 256);
+
+    /* Invariant 2: Flash sector size must be an exact multiple of 256-byte page size */
+    assert(FLASH_SECTOR_SIZE == 16 * FLASH_PAGE_SIZE);
+
+    /* Invariant 3: Config block must fit inside a single 256-byte flash page */
+    assert(sizeof(flash_config_block_t) <= FLASH_PAGE_SIZE);
+
+    /* Invariant 4: Accelerometer max readable range at +/- 2g scale (16384 LSB/g) */
+    float max_accel_g = 32767.0f / 16384.0f;
+    assert(fabsf(max_accel_g - 2.0f) < 0.001f);
+
+    /* Invariant 5: Gyroscope max readable range at +/- 250 dps scale (131.0 LSB/dps) */
+    float max_gyro_dps = 32767.0f / 131.0f;
+    assert(fabsf(max_gyro_dps - 250.0f) < 0.2f);
+
+    printf("[PASS] test_hardware_limits passed.\n");
+}
+
 int main(void) {
     printf("=== RUNNING FIRMWARE CORE UNIT TESTS ===\n");
     test_filter_basic();
     test_protocol_telemetry();
     test_protocol_ascii();
     test_storage_config();
+    test_hardware_limits();
     printf("=== ALL FIRMWARE TESTS PASSED (100%% SUCCESS) ===\n");
     return 0;
 }

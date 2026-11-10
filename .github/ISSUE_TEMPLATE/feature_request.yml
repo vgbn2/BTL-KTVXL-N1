@@ -1,0 +1,59 @@
+name: Feature request
+description: Propose a bounded firmware, host test, or serial tooling improvement.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: dropdown
+    id: component
+    attributes:
+      label: Target firmware or host component
+      description: Select the subsystem(s) this proposal affects.
+      multiple: true
+      options:
+        - MPU6050
+        - W25Qxx
+        - ILI9341
+        - USART1
+        - Calibration/Filter
+        - Host tests/CI
+        - Scripts/PuTTY
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or need
+      description: Explain the specific engineering or usability gap and who is affected.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Describe the smallest bounded scope, affected pins/UART commands/interfaces, and alternatives considered.
+    validations:
+      required: true
+  - type: textarea
+    id: verification_plan
+    attributes:
+      label: Verification plan
+      description: Specify required verification across `host CTest`, `ARM compile`, and `physical board`, plus any documentation updates.
+    validations:
+      required: true
+  - type: textarea
+    id: safety_wiring
+    attributes:
+      label: Safety, wiring, and resource boundaries
+      description: Note Flash erase/write wear, ISR latency, 3.3 V/5 V power or pinout changes, or serial permission assumptions. Write "Host-only / none" if none apply.
+    validations:
+      required: false
+  - type: checkboxes
+    id: acknowledgements
+    attributes:
+      label: Acknowledgements
+      options:
+        - label: I distinguished host CTest, ARM compilation, and physical board qualification requirements.
+          required: true
+        - label: This proposal contains no credentials, private host details, or security-sensitive disclosures.
+          required: true

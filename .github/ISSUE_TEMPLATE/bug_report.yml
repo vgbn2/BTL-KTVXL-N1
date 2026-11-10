@@ -1,0 +1,81 @@
+name: Bug report
+description: Report a reproducible firmware, host test, or serial tooling defect.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not report security vulnerabilities, exploit details, credentials, or private user/host information in public issues. See [SECURITY.md](https://github.com/vgbn2/BTL-KTVXL-N1/blob/main/SECURITY.md) for private reporting instructions.
+  - type: dropdown
+    id: component
+    attributes:
+      label: Firmware or host component
+      description: Select one or more affected subsystems.
+      multiple: true
+      options:
+        - MPU6050
+        - W25Qxx
+        - ILI9341
+        - USART1
+        - Calibration/Filter
+        - Host tests/CI
+        - Scripts/PuTTY
+    validations:
+      required: true
+  - type: dropdown
+    id: verification_scope
+    attributes:
+      label: Verification scope
+      description: Select every environment where the issue was actually observed.
+      multiple: true
+      options:
+        - host CTest
+        - ARM compile
+        - physical board
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: Describe the observed behavior and the expected behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      description: Provide the commit SHA, exact commands, and UART/test inputs needed to reproduce without unsafe host commands.
+      placeholder: |
+        1. Commit: <sha>
+        2. Run `bash scripts/agent_test.sh` or `make BUILD_DIR=/tmp/btl firmware`
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Paste relevant compiler output, CTest logs, or redacted UART transcripts.
+    validations:
+      required: true
+  - type: textarea
+    id: hardware_wiring
+    attributes:
+      label: Hardware, wiring, and serial details (if applicable)
+      description: For physical board issues, state MCU/board revision, module wiring, supply/logic voltage (3.3 V vs 5 V), USB-UART adapter, and port settings. Enter "Host-only" if no hardware was connected.
+    validations:
+      required: false
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety and scope disclosures
+      options:
+        - label: This report contains no security exploit details, credentials, or private user/host information.
+          required: true
+        - label: I kept host CTest, ARM compile, and physical board evidence strictly distinct.
+          required: true
+        - label: If physical hardware was connected, common GND and 3.3 V logic levels were verified before powering on (or this issue is host-only).
+          required: true

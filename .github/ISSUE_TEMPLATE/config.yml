@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security reporting
+    url: https://github.com/vgbn2/BTL-KTVXL-N1/security/advisories/new
+    about: Use GitHub private vulnerability reporting to report security vulnerabilities confidentially.
+  - name: Contribution guidance
+    url: https://github.com/vgbn2/BTL-KTVXL-N1/blob/main/CONTRIBUTING.md
+    about: Read the build, test, serial-permission, and verification workflow before opening an issue.

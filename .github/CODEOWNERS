@@ -1,0 +1,20 @@
+# BTL-KTVXL-N1 - Codeowners
+
+# Default review owner
+* @vgbn2
+
+# Domain ownership
+/src/ @vgbn2
+/tests/ @vgbn2
+/scripts/ @vgbn2
+/docs/ @vgbn2
+/third_party/ @vgbn2
+
+# Build, CI, and governance boundaries
+/.github/ @vgbn2
+/Makefile @vgbn2
+/CMakeLists.txt @vgbn2
+/README.md @vgbn2
+/CONTRIBUTING.md @vgbn2
+/SECURITY.md @vgbn2
+/CODE_OF_CONDUCT.md @vgbn2
