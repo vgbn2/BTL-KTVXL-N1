@@ -116,9 +116,8 @@ make firmware # Biên dịch C99 + SPL trong third_party/stm32f10x/, KHÔNG nạ
 ### 3. Verification / Kiểm thử host, biên giới hạn và kiểm tra chéo cho Agent
 
 ```bash
-bash scripts/agent_test.sh                # Chạy host CMake/CTest, check_flash_uart_boundaries.py src, và agent_uart.py --self-test
-bash scripts/agent_test.sh --firmware     # --firmware thêm bước compile/link ARM; KHÔNG nạp phần cứng
-make test test-component test-stress      # Chạy từng nhóm test native qua Makefile khi cần khoanh vùng
+make test                                 # Một lệnh cho toàn bộ host CTest (4/4), kiểm tra biên Flash/UART và agent_uart --self-test
+make test FIRMWARE=1                      # Thêm bước compile/link ARM (tương đương bash scripts/agent_test.sh --firmware)
 python3 -B tests/repro/check_flash_uart_boundaries.py src # -B không ghi __pycache__; ép chạy slice JEDEC/ISR thật từ src/
 arm-none-eabi-size build/firmware/firmware.elf            # Kiểm tra dung lượng text/data/bss sau khi build ARM
 ```
@@ -153,7 +152,7 @@ id                          # Kiểm tra user hiện tại đã thuộc nhóm di
 **Nạp firmware xuống Flash nội STM32 (`0x08000000`):**
 
 ```bash
-make flash-firmware # Biên dịch nếu cần rồi gọi st-flash --reset write build/firmware/firmware.bin 0x08000000
+make flash # Tất cả trong một: build + probe ST-Link + nạp 0x08000000 (st-flash, tự fallback OpenOCD) + dò UART (thêm UART=1 để thử GET_ANGLE, PUTTY=1 để mở PuTTY, TARGET=hw-test cho test phần cứng)
 ```
 
 **Kênh cho người dùng (Human — PuTTY / plink / PowerShell):**

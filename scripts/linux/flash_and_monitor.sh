@@ -14,13 +14,9 @@ echo -e "\033[1;36m============================================================\
 echo "Target: STM32F103 USART1 @ ${BAUD} Baud (8-N-1)"
 echo ""
 
-# 1. Compile firmware
-echo "--> Compiling firmware..."
-make firmware
-
-# 2. Flash to STM32
-echo "--> Flashing build/firmware/firmware.bin via ST-Link..."
-make flash-firmware
+# 1. Compile & flash firmware
+echo "--> Compiling and flashing firmware..."
+make flash
 
 echo -e "\n\033[1;32m[FLASH SUCCESSFUL]\033[0m"
 

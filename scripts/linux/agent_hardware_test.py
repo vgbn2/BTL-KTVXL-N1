@@ -66,9 +66,9 @@ def probe_serial_ports():
     return candidates
 
 def flash_firmware():
-    """Flashes firmware via make flash-firmware."""
+    """Flashes firmware via make flash."""
     print(f"{CYAN}--> Flashing STM32 firmware via ST-Link...{RESET}")
-    res = subprocess.run(["make", "flash-firmware"], capture_output=True, text=True)
+    res = subprocess.run(["make", "flash"], capture_output=True, text=True)
     if res.returncode != 0:
         print(f"{RED}[FAIL] Flash failed!{RESET}\n{res.stderr}")
         return False
@@ -289,7 +289,7 @@ def run_diagnostic_hw_suite(target_port):
     print(f"{BOLD}{YELLOW}   MODE: ON-TARGET C DIAGNOSTIC HARDWARE SUITE   {RESET}")
     print("=" * 65)
     print("--> Flashing Target Hardware Diagnostic binary (hw_diagnostic_test.bin)...")
-    res = subprocess.run(["make", "flash-hw-test"], capture_output=True, text=True)
+    res = subprocess.run(["make", "flash", "TARGET=hw-test"], capture_output=True, text=True)
     if res.returncode != 0:
         print(f"{RED}[FAIL] Flash failed!{RESET}\n{res.stderr}")
         return False
