@@ -83,8 +83,8 @@ make flash
 # Direct Picocom for 9600 Baud LED Lab:
 picocom -b 9600 /dev/ttyUSB0 --echo --imap lfcrlf
 
-# Direct Picocom for 115200 Baud Inclinometer:
-picocom -b 115200 /dev/ttyUSB0 --echo --imap lfcrlf
+# Direct Picocom for 115200 Baud Inclinometer (STM32 echoes typed chars):
+picocom -b 115200 /dev/ttyUSB0 --imap lfcrlf
 ```
 
 ### Windows PuTTY CLI Shortcut

@@ -37,6 +37,7 @@ int main(void)
 
     /* Khoi dong Timer2 */
     DisplaySystem_TimerInit();
+    UART_SendBanner();
 
 #if defined(USE_STDPERIPH_DRIVER) || defined(STM32F10X)
     while (1)

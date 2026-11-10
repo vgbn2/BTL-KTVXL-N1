@@ -32,24 +32,38 @@ source = r'''
 #define USART_SR_NE 4U
 #define RX_BUFFER_SIZE 128U
 #define QUEUE_SIZE 4U
+#define ECHO_BUFFER_SIZE 128U
+#define IS_SRC __IS_SRC__
 #define __DMB() ((void)0)
 static struct { uint32_t SR, DR; } port;
 #define UART_PORT (&port)
 static volatile char commands[QUEUE_SIZE][RX_BUFFER_SIZE];
-static volatile uint8_t queue_write, queue_read, receive_error;
+static volatile char echo_buf[ECHO_BUFFER_SIZE];
+static volatile uint8_t queue_write, queue_read, echo_head, echo_tail, receive_error;
 static uint16_t rx_index;
-static uint8_t discard_line;
+static uint8_t discard_line, last_was_cr, esc_state;
 static int accepts(unsigned manufacturer, unsigned type, unsigned capacity, int spi_error) {
 PREDICATE
 return 0;
 }
 ISR
 static void reset(void) {
-    queue_write = queue_read = receive_error = rx_index = discard_line = 0;
+    queue_write = queue_read = echo_head = echo_tail = receive_error = 0;
+    rx_index = 0;
+    discard_line = last_was_cr = esc_state = 0;
     memset((void *)commands, 0, sizeof commands);
+    memset((void *)echo_buf, 0, sizeof echo_buf);
 }
 static void feed(const char *s) {
     while (*s) { port.SR = USART_SR_RXNE; port.DR = (unsigned char)*s++; USART1_IRQHandler(); }
+}
+static void drain_echo(char *out, size_t cap) {
+    size_t k = 0;
+    while (echo_tail != echo_head && k + 1 < cap) {
+        out[k++] = echo_buf[echo_tail];
+        echo_tail = (uint8_t)((echo_tail + 1U) % ECHO_BUFFER_SIZE);
+    }
+    out[k] = '\0';
 }
 int main(void) {
     unsigned mismatch = 0, total = 0;
@@ -77,10 +91,30 @@ int main(void) {
     errors += queue_write!=3 || !receive_error;
     reset(); for (unsigned i=0; i<128; ++i) feed("X"); feed("\r\nGET_ANGLE\n");
     errors += queue_write!=1 || !receive_error || strcmp((const char *)commands[0],"GET_ANGLE")!=0;
+#if IS_SRC
+    {
+        char echo[256];
+        drain_echo(echo, sizeof echo);
+        reset(); feed("\b\x7fGET_ANGLX\x7f\bLE\r"); drain_echo(echo, sizeof echo);
+        errors += queue_write!=1 || strcmp((const char *)commands[0],"GET_ANGLE")!=0 || strcmp(echo,"GET_ANGLX\b \b\b \bLE\r\n")!=0;
+        reset(); feed("GET_\x1b[A\x1b[3~ANGLE\r\n"); drain_echo(echo, sizeof echo);
+        errors += queue_write!=1 || strcmp((const char *)commands[0],"GET_ANGLE")!=0 || strcmp(echo,"GET_ANGLE\r\n")!=0;
+        reset(); feed("BAD\x03GET_ANGLE\r"); drain_echo(echo, sizeof echo);
+        errors += queue_write!=1 || strcmp((const char *)commands[0],"GET_ANGLE")!=0 || strcmp(echo,"BAD^C\r\nGET_ANGLE\r\n")!=0;
+        reset(); port.SR = USART_SR_FE | USART_SR_RXNE; port.DR = 0; USART1_IRQHandler();
+        feed("GET_ANGLE\r"); drain_echo(echo, sizeof echo);
+        errors += queue_write!=1 || !receive_error || strcmp((const char *)commands[0],"GET_ANGLE")!=0 || strcmp(echo,"GET_ANGLE\r\n")!=0;
+        reset(); feed("GET_"); port.SR = USART_SR_FE | USART_SR_RXNE; port.DR = 0; USART1_IRQHandler();
+        feed("ANGLE\rINFO_REQUEST\r");
+        errors += queue_write!=1 || !receive_error || strcmp((const char *)commands[0],"INFO_REQUEST")!=0;
+    }
+#else
+    (void)drain_echo;
+#endif
     printf("Boundary failures: %u\n",errors);
     return errors ? 1 : 0;
 }
-'''.replace('PREDICATE', predicate).replace('ISR', isr)
+'''.replace('__IS_SRC__', '1' if version == 'src' else '0').replace('PREDICATE', predicate).replace('ISR', isr)
 temporary = tempfile.TemporaryDirectory(prefix='btl-boundary-')
 work = Path(temporary.name)
 path = work / f'btl-boundary-{version}.c'

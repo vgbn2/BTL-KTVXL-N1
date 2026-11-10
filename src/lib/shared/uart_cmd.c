@@ -16,28 +16,56 @@
 #define UART_BAUDRATE 115200
 #define RX_BUFFER_SIZE 128U
 #define QUEUE_SIZE 4U
+#define ECHO_BUFFER_SIZE 128U
 
 /* Bien noi bo module */
 static volatile char commands[QUEUE_SIZE][RX_BUFFER_SIZE];
+static volatile char echo_buf[ECHO_BUFFER_SIZE];
 static volatile uint8_t queue_write = 0, queue_read = 0;
+static volatile uint8_t echo_head = 0, echo_tail = 0;
 static volatile uint8_t receive_error = 0;
 static uint16_t rx_index = 0;
 static uint8_t discard_line = 0;
+static uint8_t last_was_cr = 0;
+static uint8_t esc_state = 0;
 
-/* ===== Ham noi bo: gui chuoi qua UART (polling voi timeout) ===== */
+/* ===== Ham noi bo: gui byte/chuoi qua UART (polling voi timeout) ===== */
+static int uart_send_byte(uint8_t byte)
+{
+    uint32_t start = SystemTime_GetMillis();
+    while (USART_GetFlagStatus(UART_PORT, USART_FLAG_TXE) == RESET)
+    {
+        if ((uint32_t)(SystemTime_GetMillis() - start) >= 20U)
+        {
+            return 0;
+        }
+    }
+    USART_SendData(UART_PORT, byte);
+    return 1;
+}
+
 static void uart_send_string(const char *text)
 {
     while (*text)
     {
-        uint32_t start = SystemTime_GetMillis();
-        while (USART_GetFlagStatus(UART_PORT, USART_FLAG_TXE) == RESET)
+        if (!uart_send_byte((uint8_t)*text++))
         {
-            if ((uint32_t)(SystemTime_GetMillis() - start) >= 20U)
-            {
-                return;
-            }
+            return;
         }
-        USART_SendData(UART_PORT, (uint8_t)*text++);
+    }
+}
+
+static void uart_drain_echo(void)
+{
+    while (echo_tail != echo_head)
+    {
+        char c = echo_buf[echo_tail];
+        __DMB();
+        echo_tail = (uint8_t)((echo_tail + 1U) % ECHO_BUFFER_SIZE);
+        if (!uart_send_byte((uint8_t)c))
+        {
+            return;
+        }
     }
 }
 
@@ -80,6 +108,20 @@ void UART_Init(void)
     usart.USART_Mode                = USART_Mode_Rx | USART_Mode_Tx;
     USART_Init(UART_PORT, &usart);
 
+    rx_index = 0;
+    discard_line = 0;
+    receive_error = 0;
+    queue_write = 0;
+    queue_read = 0;
+    echo_head = 0;
+    echo_tail = 0;
+    last_was_cr = 0;
+    esc_state = 0;
+
+    USART_Cmd(UART_PORT, ENABLE);
+    (void)UART_PORT->SR;
+    (void)UART_PORT->DR;
+
     USART_ITConfig(UART_PORT, USART_IT_RXNE, ENABLE);
 
     nvic.NVIC_IRQChannel                   = USART1_IRQn;
@@ -87,8 +129,6 @@ void UART_Init(void)
     nvic.NVIC_IRQChannelSubPriority        = 1;
     nvic.NVIC_IRQChannelCmd                = ENABLE;
     NVIC_Init(&nvic);
-
-    USART_Cmd(UART_PORT, ENABLE);
 }
 
 /* ===== Trinh xu ly lenh ===== */
@@ -188,7 +228,11 @@ void UART_Process(void)
     char command[RX_BUFFER_SIZE];
     uint16_t i;
     uint8_t error;
-    uint32_t mask = __get_PRIMASK();
+    uint32_t mask;
+
+    uart_drain_echo();
+
+    mask = __get_PRIMASK();
     __disable_irq();
     error = receive_error;
     receive_error = 0;
@@ -231,12 +275,20 @@ void UART_SendGroupInfo(void)
     uart_send_string("DATE: " __DATE__ "\r\n");
 }
 
+void UART_SendBanner(void)
+{
+    uart_send_string("\r\nMPU6050 Inclinometer READY (115200 8N1)\r\n");
+}
+
 /* ===== Trinh ngat USART1 ===== */
 void USART1_IRQHandler(void)
 {
     uint32_t status = UART_PORT->SR;
     char ch;
     uint8_t next;
+    char echo_seq[4];
+    uint8_t echo_len = 0;
+    uint8_t i;
 
     if (!(status & (USART_SR_RXNE | USART_SR_ORE | USART_SR_FE | USART_SR_NE)))
     {
@@ -246,8 +298,14 @@ void USART1_IRQHandler(void)
     ch = (char)UART_PORT->DR;
     if (status & (USART_SR_ORE | USART_SR_FE | USART_SR_NE))
     {
-        discard_line = 1;
         receive_error = 1;
+        if (rx_index != 0U)
+        {
+            discard_line = 1;
+        }
+        last_was_cr = 0;
+        esc_state = 0;
+        return;
     }
 
     if (!(status & USART_SR_RXNE))
@@ -255,8 +313,35 @@ void USART1_IRQHandler(void)
         return;
     }
 
+    if (esc_state != 0U)
+    {
+        last_was_cr = 0;
+        if (esc_state == 1U)
+        {
+            esc_state = (ch == '[' || ch == 'O') ? 2U : 0U;
+        }
+        else if ((uint8_t)ch >= 0x40U && (uint8_t)ch <= 0x7EU)
+        {
+            esc_state = 0U;
+        }
+        return;
+    }
+
+    if ((uint8_t)ch == 0x1BU)
+    {
+        last_was_cr = 0;
+        esc_state = 1U;
+        return;
+    }
+
     if (ch == '\r' || ch == '\n')
     {
+        if (ch == '\n' && last_was_cr)
+        {
+            last_was_cr = 0;
+            return;
+        }
+        last_was_cr = (ch == '\r') ? 1U : 0U;
         if (!discard_line && rx_index != 0U)
         {
             commands[queue_write][rx_index] = '\0';
@@ -265,19 +350,68 @@ void USART1_IRQHandler(void)
         }
         rx_index = 0;
         discard_line = 0;
-        return;
+        echo_seq[0] = '\r';
+        echo_seq[1] = '\n';
+        echo_len = 2U;
     }
-
-    next = (uint8_t)((queue_write + 1U) % QUEUE_SIZE);
-    if (discard_line) return;
-    if (next == queue_read || rx_index >= RX_BUFFER_SIZE - 1U)
+    else if (ch == '\b' || (uint8_t)ch == 0x7FU)
     {
-        discard_line = 1;
-        receive_error = 1;
+        last_was_cr = 0;
+        if (!discard_line && rx_index > 0U)
+        {
+            rx_index--;
+            echo_seq[0] = '\b';
+            echo_seq[1] = ' ';
+            echo_seq[2] = '\b';
+            echo_len = 3U;
+        }
+    }
+    else if ((uint8_t)ch == 0x03U)
+    {
+        last_was_cr = 0;
+        rx_index = 0;
+        discard_line = 0;
+        echo_seq[0] = '^';
+        echo_seq[1] = 'C';
+        echo_seq[2] = '\r';
+        echo_seq[3] = '\n';
+        echo_len = 4U;
+    }
+    else if ((uint8_t)ch < 0x20U || (uint8_t)ch > 0x7EU)
+    {
+        last_was_cr = 0;
         return;
     }
+    else
+    {
+        last_was_cr = 0;
+        if (discard_line)
+        {
+            return;
+        }
+        next = (uint8_t)((queue_write + 1U) % QUEUE_SIZE);
+        if (next == queue_read || rx_index >= RX_BUFFER_SIZE - 1U)
+        {
+            discard_line = 1;
+            receive_error = 1;
+            return;
+        }
+        commands[queue_write][rx_index++] = ch;
+        echo_seq[0] = ch;
+        echo_len = 1U;
+    }
 
-    commands[queue_write][rx_index++] = ch;
+    for (i = 0; i < echo_len; i++)
+    {
+        uint8_t next_echo = (uint8_t)((echo_head + 1U) % ECHO_BUFFER_SIZE);
+        if (next_echo == echo_tail)
+        {
+            break;
+        }
+        echo_buf[echo_head] = echo_seq[i];
+        __DMB();
+        echo_head = next_echo;
+    }
 }
 
 #else
@@ -299,5 +433,6 @@ void UART_SendGroupInfo(void)
     printf("HARDWARE_USED: STM32F103C8, MPU6050, ILI9341, W25Qxx\r\n");
     printf("SOFTWARE_USED: Keil MDK, SPL\r\n");
 }
+void UART_SendBanner(void) { }
 
 #endif

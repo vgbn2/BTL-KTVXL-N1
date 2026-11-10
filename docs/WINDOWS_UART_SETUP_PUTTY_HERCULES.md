@@ -146,20 +146,20 @@ PuTTY is a standard, lightweight terminal emulator. Because embedded microcontro
    - **Parity:** `None`
    - **Flow control:** `None`
 
-#### Step 3: Terminal Emulation Flags (MANDATORY)
+#### Step 3: Terminal Emulation Flags (Recommended)
 1. In the left Category tree, navigate to **Terminal**.
-2. Set the following settings:
-   - **Implicit CR in every LF:** Check this box `[X]` (Prevents stair-stepped line printing when lines arrive with only `\n`).
+2. Keep the following settings:
+   - **Implicit CR in every LF:** Check this box `[X]` (Prevents stair-stepped line printing if a line arrives with only `\n`).
    - **Implicit LF in every CR:** Leave unchecked `[ ]`.
-   - **Local echo:** Select **`Force on`** (STM32 does not echo back characters while typing; this ensures you can see what you type).
-   - **Local line editing:** Select **`Force on`** (Buffers your command locally in PuTTY, enabling `Backspace` corrections until you hit `Enter`).
+   - **Local echo:** Leave at **`Auto`** (STM32 firmware echoes typed characters and `\r\n`; selecting `Force on` will double-echo).
+   - **Local line editing:** Leave at **`Auto`** (STM32 firmware handles `\b` / `0x7F` Backspace and `Ctrl+C` directly).
 
 ```
 +-----------------------------------------------------------+
 | Category: Terminal                                        |
 |   Line discipline options:                                |
-|     Local echo:          ( ) Auto   ( ) Force off  (*) Force on |
-|     Local line editing:  ( ) Auto   ( ) Force off  (*) Force on |
+|     Local echo:          (*) Auto   ( ) Force off  ( ) Force on |
+|     Local line editing:  (*) Auto   ( ) Force off  ( ) Force on |
 |   Terminal character options:                             |
 |     [X] Implicit CR in every LF                           |
 |     [ ] Implicit LF in every CR                           |
@@ -423,7 +423,7 @@ Features:
 | Symptom / Observation | Underlying Causal Root Cause | Exact Remediation Step |
 | :--- | :--- | :--- |
 | **PuTTY shows "Unable to open serial port"** | Port is locked exclusively by another process (Arduino IDE, Hercules, Python script, or previous PuTTY session). | Close all other terminal programs. Run `Get-Process \| Where-Object { $_.MainWindowTitle -match 'PuTTY' } \| Stop-Process` in PowerShell. |
-| **PuTTY window opens, but typing produces no characters on screen** | Normal behavior: STM32 does not echo back characters. PuTTY default is Local Echo = Auto/Off. | In PuTTY settings: navigate to **Terminal**, change **Local echo** to **Force on**, and change **Local line editing** to **Force on**. |
+| **PuTTY window opens, but typing produces no characters on screen** | Firmware baud mismatch, TX line disconnected (`PA9` -> USB RX), or older non-echo firmware build. | Verify `115200 8-N-1`, `PA9` -> adapter RX, and press `NRST` to check for the `MPU6050 Inclinometer READY` boot banner (leave `Local echo` at `Auto` on current firmware). |
 | **Garbage / unreadable characters (`\x00\xFF`) printed** | 1. Baud rate mismatch (e.g. 9600 vs 115200).<br>2. Missing common GND connection causing floating voltage logic levels.<br>3. Inverted logic or noisy jumper wires. | 1. Verify baud is **`115200`** in terminal.<br>2. Confirm **GND wire** connects USB-UART adapter GND directly to STM32 GND.<br>3. Replace breadboard jumper wires with short (<15 cm) ribbon cables. |
 | **Commands sent, but STM32 never responds** | 1. `TX` and `RX` lines are swapped.<br>2. Missing `\r\n` line terminator (STM32 IDLE interrupt did not trigger or parser did not find delimiter).<br>3. STM32 in HardFault or halted in debugger. | 1. Swap `TX` and `RX`: ensure Host `TX` -> STM32 `PA10` (`RX`), and Host `RX` -> STM32 `PA9` (`TX`).<br>2. In Hercules, verify command has `$0D$0A` suffix.<br>3. Press the black `NRST` button on the STM32 board to reboot firmware. |
 | **Staircase text effect in terminal (each line indents further right)** | Firmware outputs newline `\n` without preceding carriage return `\r`, or terminal treats `\n` as line feed only. | In PuTTY: check **Terminal** > **Implicit CR in every LF**. |
@@ -439,7 +439,7 @@ Features:
 - [ ] USB-UART RX connected to STM32 `PA9` (TX).
 - [ ] Windows Device Manager confirms COM port number (e.g. `COM3`).
 - [ ] Terminal set to: **115200 Baud, 8 Data bits, None parity, 1 Stop bit, No flow control**.
-- [ ] PuTTY configured with **Local echo: Force on**, **Local line editing: Force on**, and **Implicit CR in every LF: Checked**.
+- [ ] PuTTY left at **Local echo: Auto**, **Local line editing: Auto**, and **Implicit CR in every LF: Checked**.
 - [ ] Hercules Macros loaded with `GET_ANGLE$0D$0A` and `INFO_REQUEST$0D$0A`.
 - [ ] Test command `INFO_REQUEST` returns Group 04 metadata.
 - [ ] Test command `GET_ANGLE` returns active roll and pitch angles.

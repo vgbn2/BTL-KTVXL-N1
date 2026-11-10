@@ -69,14 +69,14 @@ case "$MON_OPT" in
             exit 1
         fi
         if command -v gnome-terminal >/dev/null 2>&1; then
-            gnome-terminal --title="BTL_KTVXL Monitor ($BAUD)" -- picocom -b "$BAUD" "$PORT" --echo --imap lfcrlf &
+            gnome-terminal --title="BTL_KTVXL Monitor ($BAUD)" -- picocom -b "$BAUD" "$PORT" --imap lfcrlf &
             echo "Spawned new terminal window on $PORT @ $BAUD baud."
         elif command -v xterm >/dev/null 2>&1; then
-            xterm -T "BTL_KTVXL Monitor" -e picocom -b "$BAUD" "$PORT" --echo --imap lfcrlf &
+            xterm -T "BTL_KTVXL Monitor" -e picocom -b "$BAUD" "$PORT" --imap lfcrlf &
             echo "Spawned xterm window."
         else
             echo "Neither gnome-terminal nor xterm found. Running in current terminal instead:"
-            picocom -b "$BAUD" "$PORT" --echo --imap lfcrlf
+            picocom -b "$BAUD" "$PORT" --imap lfcrlf
         fi
         ;;
     3)
@@ -84,7 +84,7 @@ case "$MON_OPT" in
             echo -e "\033[1;31m[ERROR] picocom is not installed. Install the 'picocom' package and retry.\033[0m" >&2
             exit 1
         fi
-        picocom -b "$BAUD" "$PORT" --echo --imap lfcrlf
+        picocom -b "$BAUD" "$PORT" --imap lfcrlf
         ;;
     4)
         if ! command -v cutecom >/dev/null 2>&1; then

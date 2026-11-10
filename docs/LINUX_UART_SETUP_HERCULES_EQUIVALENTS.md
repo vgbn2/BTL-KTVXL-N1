@@ -46,7 +46,7 @@ Located at:
 ```
 Presents a simple menu:
 1. Python interactive shell with `[1]`–`[5]` Hercules-style macro shortcuts and colorized output.
-2. `picocom` CLI session with local echo and CRLF mapping.
+2. `picocom` CLI session with CRLF mapping (firmware handles TX echo).
 3. `cutecom` GUI (Hercules twin).
 4. `putty` GUI.
 
@@ -76,12 +76,11 @@ Presents a simple menu:
 ### C. Picocom (Terminal CLI — Zero Install)
 `picocom` is already installed on your system:
 ```bash
-picocom -b 115200 /dev/ttyUSB0 --echo --imap lfcrlf
+picocom -b 115200 /dev/ttyUSB0 --imap lfcrlf
 ```
 * **Flags explained:**
   - `-b 115200`: Sets baud rate.
-  - `--echo`: Enables local typing echo (STM32 does not echo raw keystrokes).
-  - `--imap lfcrlf`: Maps Enter (`LF`) to `CRLF` so the STM32 line parser triggers.
+  - `--imap lfcrlf`: Maps incoming `LF` to `CRLF` (STM32 firmware already echoes typed keys and `\r\n`, so omit `--echo` to avoid double characters).
 * **Exit:** Press `Ctrl+A` followed by `Ctrl+X`.
 
 ---

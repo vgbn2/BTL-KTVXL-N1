@@ -176,7 +176,7 @@ def run_single_hw_suite(harness):
     # Rapidly send command
     lines1 = harness.send_cmd("INFO_REQUEST", wait_sec=0.1)
     lines2 = harness.send_cmd("GET_ANGLE", wait_sec=0.1)
-    if len(lines1) > 0 and len(lines2) > 0:
+    if any("GROUP_NAME:" in l for l in lines1) and any(l.startswith(("ROLL:", "ERROR:ANGLE_NOT_READY")) for l in lines2):
         print(f"  Subsystem State: {GREEN}PASS (NVIC IRQ, FIFO Queue, No Overrun Flags){RESET}")
         passed += 1
     else:
